@@ -30,7 +30,6 @@ export const authOptions: AuthOptions = {
                     return null
 
                 const response = await authService(credentials?.email, credentials?.password)
-
                 if (response) {
                     return {
                         id: response.id,

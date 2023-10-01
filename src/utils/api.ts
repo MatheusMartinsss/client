@@ -17,7 +17,7 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
-    return Promise.reject(error);
+    return Promise.reject(error.response);
   }
 );
 
@@ -29,11 +29,8 @@ api.interceptors.response.use(
   },
   (error) => {
     // Aqui você pode lidar com erros de autenticação, por exemplo
-    if (error.response?.status === 401) {
-      // Redirecione o usuário para a página de login ou execute outra ação apropriada
-      // router.push('/login'); // Certifique-se de importar o router do Next.js
-    }
-    return Promise.reject(error);
+
+    return Promise.reject(error.response);
   }
 );
 
