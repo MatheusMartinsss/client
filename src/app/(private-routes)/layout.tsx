@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth";
 import { ReactNode } from "react";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
-
+import Template from "../components/Layout/Template";
 interface PrivateLayoutProps {
     children: ReactNode
 }
@@ -13,5 +13,9 @@ export default async function PrivateLayout({ children }: PrivateLayoutProps) {
         redirect('/auth')
     }
 
-    return <>{children} </>
+    return (
+        <Template>
+            {children}
+        </Template>
+    )
 }
