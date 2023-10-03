@@ -12,19 +12,16 @@ export const Header = () => {
             component='header'
             sx={{
                 backdropFilter: 'blur(6px)',
-                position: 'sticky',
+                position: 'fixed',
+                marginLeft: '240px',
                 backgroundColor: alpha(common.white, 0.5),
-                left: {
-                    lg: 240
-                },
-                top: 0,
-                width: {
-                    lg: `calc(100% - 240px)`
-                },
-                zIndex: (theme) => theme.zIndex.appBar
+                width: `calc(100% - 240px)`,
+                display: 'flex',
+                height: 64,
+                zIndex: (theme) => theme.zIndex.appBar,
+                boxShadow: "0 2px 4px rgba(128, 128, 128, 0.2)"
             }}
         >
-
             <Box display='flex' justifyContent='flex-end' alignItems='center' gap={2} flexGrow={1} padding={2}>
                 <Typography variant="h6" component='div'>Bem-vindo, {user?.name}</Typography>
                 <Button onClick={() => signOut()} variant='contained'>Logout</Button>

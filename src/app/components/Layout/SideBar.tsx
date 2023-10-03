@@ -29,8 +29,8 @@ export const Sidebar = () => {
             variant='permanent'
             open={true}
         >
-            <Toolbar >
-                <Box>
+            <Toolbar sx={{  boxShadow: "0 2px 4px rgba(128, 128, 128, 0.2)" }} >
+                <Box color='white'>
                     Flona
                 </Box>
             </Toolbar>

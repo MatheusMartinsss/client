@@ -8,10 +8,11 @@ type TemplateProps = {
 
 const Template = ({ children }: TemplateProps) => {
     return (
-        <Box>
+        <Box sx={{ display: 'flex' }}>
             <Sidebar />
             <Header />
-            <Box sx={{ display: 'flex' }} >
+            <Box component='main'
+                sx={{ flexGrow: 1, p: 3, mt: 5 }} >
                 {children}
             </Box>
         </Box>
