@@ -12,10 +12,9 @@ export const Header = () => {
             component='header'
             sx={{
                 backdropFilter: 'blur(6px)',
-                position: 'fixed',
-                marginLeft: '240px',
+                position: 'sticky',
                 backgroundColor: alpha(common.white, 0.5),
-                width: `calc(100% - 240px)`,
+                width: '100%',
                 display: 'flex',
                 height: 64,
                 zIndex: (theme) => theme.zIndex.appBar,

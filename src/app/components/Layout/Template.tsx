@@ -10,10 +10,11 @@ const Template = ({ children }: TemplateProps) => {
     return (
         <Box sx={{ display: 'flex' }}>
             <Sidebar />
-            <Header />
-            <Box component='main'
-                sx={{ flexGrow: 1, p: 3, mt: 5 }} >
-                {children}
+            <Box display='flex' flexDirection='column' width='100%'>
+                <Header />
+                <Box component='main'sx={{ p: 5 }} >
+                    {children}
+                </Box>
             </Box>
         </Box>
     )
