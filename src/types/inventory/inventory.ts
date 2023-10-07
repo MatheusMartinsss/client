@@ -4,7 +4,7 @@ export interface inventory {
     id: number;
     name: string;
     description: string;
-    volumeTotal?: number;
+    totalVolumeM3?: number;
     createdAt?: Date;
     updatedAt?: Date;
     items?: IItem[]
