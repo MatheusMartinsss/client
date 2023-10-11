@@ -18,4 +18,8 @@ export const MenuItems: MenuItem[] = [{
     path: '/items',
     name: 'Items',
     Icon: InventoryIcon
+}, {
+    path: '/transactions',
+    name: 'Transações',
+    Icon: InventoryIcon
 }]

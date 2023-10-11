@@ -1,7 +1,7 @@
 import api from "@/utils/api"
 
 export const ListInventorys = async ({ includeVolume = false, includeRemoved = false }:
-    { includeVolume: boolean, includeRemoved?: boolean }) => {
+    { includeVolume?: boolean, includeRemoved?: boolean }) => {
     try {
         const response = await api.get(`/inventory`, {
             params: {
