@@ -14,7 +14,6 @@ interface ItemsTableProps {
 export const ItemsSearchTable = ({ items, handleConfirm, handleModal }: ItemsTableProps) => {
     const [itemsSelected, setItemSelected] = useState<IItem[]>([])
 
-
     const SelectItem = (item: IItem) => {
         const itemIsSelected = isSelected(item.id)
         if (itemIsSelected) {
@@ -41,56 +40,56 @@ export const ItemsSearchTable = ({ items, handleConfirm, handleModal }: ItemsTab
         handleConfirm(itemsSelected)
         handleModal()
     }
-
     return (
-        items.length ? (
-            <Box >
-                <Box
-                    mt={2}
-                    padding={2}
-                    display='flex'
-                    justifyContent='space-between'
-                    alignItems='center'
-                    sx={{ backgroundColor: '#f0f0f0' }}
-                >
-                    {itemsSelected.length > 0 ? (
-                        <>
-                            <Typography>{itemsSelected.length} Selecionados</Typography>
-                            <IconButton
-                                size="small"
-                                onClick={() => setItemSelected([])}
-                            >
-                                <DeleteOutlineIcon />
-                            </IconButton>
-                        </>
-                    ) : (
-                        <>
-                            <Typography variant="h6" fontWeight='bolder'>Items</Typography>
-                        </>
-                    )}
+        <Box width='950px' height='650px'>
+            <Box
+                mt={2}
+                padding={2}
+                display='flex'
+                justifyContent='space-between'
+                alignItems='center'
+                sx={{ backgroundColor: '#f0f0f0' }}
+            >
+                {itemsSelected.length > 0 ? (
+                    <>
+                        <Typography>{itemsSelected.length} Selecionados</Typography>
+                        <IconButton
+                            size="small"
+                            onClick={() => setItemSelected([])}
+                        >
+                            <DeleteOutlineIcon />
+                        </IconButton>
+                    </>
+                ) : (
+                    <>
+                        <Typography variant="h6" fontWeight='bolder'>Items</Typography>
+                    </>
+                )}
 
-                </Box>
-                <TableContainer sx={{
-                    overflowY: 'auto',
-                    height: 450
-                }}>
-                    <Table >
-                        <TableHead sx={{ backgroundColor: '#f0f0f0', position: 'sticky', top: 0 }} >
-                            <TableRow>
-                                <TableCell>#</TableCell>
-                                <TableCell>Plaqueta</TableCell>
-                                <TableCell>Produto</TableCell>
-                                <TableCell>D1</TableCell>
-                                <TableCell>D2</TableCell>
-                                <TableCell>D3</TableCell>
-                                <TableCell>D4</TableCell>
-                                <TableCell>Comprimento</TableCell>
-                                <TableCell>M3</TableCell>
-                                <TableCell>Entrada</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody >
-                            {items.map((row) => {
+            </Box>
+            <TableContainer sx={{
+                overflowY: 'auto',
+                overflowX: 'hidden',
+                height: 450
+            }}>
+                <Table >
+                    <TableHead sx={{ backgroundColor: '#f0f0f0', position: 'sticky', top: 0, zIndex: 999 }} >
+                        <TableRow>
+                            <TableCell>#</TableCell>
+                            <TableCell>Plaqueta</TableCell>
+                            <TableCell>Produto</TableCell>
+                            <TableCell>D1</TableCell>
+                            <TableCell>D2</TableCell>
+                            <TableCell>D3</TableCell>
+                            <TableCell>D4</TableCell>
+                            <TableCell>Comprimento</TableCell>
+                            <TableCell>M3</TableCell>
+                            <TableCell>Entrada</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody >
+                        {items.length > 0 ?
+                            (items.map((row) => {
                                 const itemIsSelected = isSelected(row.id)
                                 return (
                                     <TableRow
@@ -118,52 +117,59 @@ export const ItemsSearchTable = ({ items, handleConfirm, handleModal }: ItemsTab
                                         <TableCellDate date={row.createdAt} />
                                     </TableRow>
                                 )
-                            })}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <Box
-                    display='flex'
-                    alignItems='center'
-                    padding={2}
-                    sx={{ height: 80, backgroundColor: '#f0f0f0' }} >
+                            })) : (
+                                <TableRow>
+                                    <TableCell colSpan={10}>
+                                        <Box
+                                            component={Paper}
+                                            display="flex"
+                                            justifyContent="center"
+                                            alignItems="center"
+                                            sx={{
+                                                marginTop: '16px',
+                                                borderRadius: '8px',
+                                                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
 
-                    <Box display='flex' width='100%' sx={{ justifyContent: 'flex-end' }}>
-                        <Typography variant="subtitle1" fontWeight='bolder'>Volume {volumeTotal}M3</Typography>
-                    </Box>
-                </Box>
-                <Box
-                    display='flex'
-                    width='100%'
-                    sx={{ justifyContent: 'flex-end', padding: 2 }}
-                >
-                    <Button
-                        variant='contained'
-                        disabled={itemsSelected.length === 0}
-                        onClick={handleItems}
-
-                    >
-                        Confirmar - {itemsSelectedVolume}M3
-                    </Button>
-                </Box>
-            </Box>
-        ) : (
+                                                minHeight: '350px',
+                                            }}
+                                        >
+                                            <Typography variant="h5" color="#555555">
+                                                Nenhum item encontrado!
+                                            </Typography>
+                                        </Box>
+                                    </TableCell>
+                                </TableRow>
+                            )
+                        }
+                    </TableBody>
+                </Table>
+            </TableContainer>
             <Box
-                component={Paper}
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                sx={{
-                    marginTop: '16px',
-                    borderRadius: '8px',
-                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                    background: '#f0f0f0',
-                    minHeight: '350px',
-                }}
-            >
-                <Typography variant="h5" color="#555555">Nenhum item encontrado!</Typography>
+                display='flex'
+                alignItems='center'
+                padding={2}
+                sx={{ height: 80, backgroundColor: '#f0f0f0' }} >
+
+                <Box display='flex' width='100%' sx={{ justifyContent: 'flex-end' }}>
+                    <Typography variant="subtitle1" fontWeight='bolder'>Volume {volumeTotal}M3</Typography>
+                </Box>
             </Box>
-        )
+            <Box
+                display='flex'
+                width='100%'
+                sx={{ justifyContent: 'flex-end', padding: 2 }}
+            >
+                <Button
+                    variant='contained'
+                    disabled={itemsSelected.length === 0}
+                    onClick={handleItems}
+
+                >
+                    Confirmar - {itemsSelectedVolume}M3
+                </Button>
+            </Box>
+
+        </Box>
     )
 }
 export default ItemsSearchTable

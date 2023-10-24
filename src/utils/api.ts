@@ -16,7 +16,7 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
-    return Promise.reject(error.response);
+    return Promise.reject(error);
   }
 );
 
@@ -27,7 +27,7 @@ api.interceptors.response.use(
   },
   (error) => {
     // Aqui você pode lidar com erros de autenticação, por exemplo
-    return Promise.reject(error.response);
+    return Promise.reject(error);
   }
 );
 

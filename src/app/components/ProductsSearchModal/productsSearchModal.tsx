@@ -1,30 +1,30 @@
 "use client"
 import { IItem } from "@/types/items/item"
 import { Box, Dialog, InputAdornment, Paper, TextField } from "@mui/material"
-import ItemsSearchTable from "./components/ItemsSearchTable"
+import ProductsTable from "./components/productsTable"
 import SearchIcon from '@mui/icons-material/Search';
 import { useEffect, useState } from "react";
 import { ListItems } from "@/services/itemService";
-
-type ItemsSearchProps = {
+import { ListProducts } from "@/services/productsService";
+import { IProduct } from "@/types/product/product";
+type ProductsSearchProps = {
     open: boolean
     handleModal: () => void
-    handleItems: (items: IItem[]) => void
-    itemsSelected: IItem[]
+    onSelectProduct: (product: IProduct) => void
 
 }
 
-const ItemsSearchModal = ({ open, handleModal, handleItems, itemsSelected }: ItemsSearchProps) => {
+const ProductSearchModal = ({ open, handleModal, onSelectProduct }: ProductsSearchProps) => {
     const [query, setQuery] = useState({ searchBy: '' })
-    const [listItems, setListItems] = useState<IItem[]>([])
+    const [listProducts, setListProducts] = useState<IItem[]>([])
 
     useEffect(() => {
-        getItems()
+        getProducts()
     }, [query])
 
-    const getItems = async () => {
-        await ListItems({ searchBy: query.searchBy }).then((response) => {
-            setListItems(response)
+    const getProducts = async () => {
+        await ListProducts({}).then((response) => {
+            setListProducts(response)
         }).catch((error) => {
             console.log(error)
         })
@@ -36,16 +36,13 @@ const ItemsSearchModal = ({ open, handleModal, handleItems, itemsSelected }: Ite
             setQuery((state) => ({ ...state, searchBy: '' }))
         }
     }
-    const getItemsList = (): IItem[] => {
-        return listItems.filter((item) => {
-            return !itemsSelected.some(selectedItem => selectedItem.id === item.id);
-        });
-    }
+
     return (
         <Dialog
             open={open}
             onClose={handleModal}
-            maxWidth ='lg'
+            maxWidth='lg'
+            autoFocus = {false}
         >
             <Box component={Paper} padding={4}>
                 <TextField
@@ -64,13 +61,13 @@ const ItemsSearchModal = ({ open, handleModal, handleItems, itemsSelected }: Ite
 
                 >
                 </TextField>
-                <ItemsSearchTable
-                    items={getItemsList()}
-                    handleConfirm={handleItems}
+                <ProductsTable
+                    products={listProducts}
+                    onSelect={onSelectProduct}
                     handleModal={handleModal}
                 />
             </Box>
         </Dialog>
     )
 }
-export default ItemsSearchModal
+export default ProductSearchModal

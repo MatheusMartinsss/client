@@ -1,138 +1,154 @@
 "use client"
 import { transactionTypes } from "@/types/transaction/transaction"
-import { Autocomplete, Box, Button, Divider, Grid, MenuItem, Paper, Select, TextField } from "@mui/material"
+import { Box, Button, Divider, Grid, MenuItem, Paper, Select, SelectChangeEvent, TextField, Typography } from "@mui/material"
 import * as Yup from 'yup'
-import { FieldArray, Formik, useFormik } from 'formik';
-import { useEffect, useState } from "react";
-import { ListInventorys } from "@/services/inventoryService";
-import { inventory } from "@/types/inventory/inventory";
+import { useFormik } from 'formik';
+import { useState } from "react";
 import { IItem } from "@/types/items/item";
-import { ListItems } from "@/services/itemService";
-import React from "react";
+import React, { useEffect } from "react";
 import ItemsSearchModal from "@/app/components/ItemsSearchModal/ItemsSearchModal";
 import ItemsList from "../transaction/components/ItemsList";
-
+import { createTransaction } from "@/services/transactionService";
+import ToastMessage from '@/app/components/Toast';
+import { ItemForm } from "../transaction/components/itemForm";
+import Search from '@mui/icons-material/Search'
+interface savedItemsProps {
+    type: string
+    items: IItem[]
+}
 
 const TransactionForm = () => {
-    const [inventorysList, setInventoryList] = useState<inventory[]>([])
-    const [listItems, setListItems] = useState<IItem[]>([])
     const [open, setOpen] = useState<boolean>(false)
-    useEffect(() => {
-        getInventorys()
-        getItems()
-    }, [])
-
+    const [savedItems, setSavedItems] = useState<savedItemsProps>({ type: '', items: [] })
     const handleModal = () => {
         setOpen((state) => !state)
     }
-
-    const getInventorys = async () => {
-        await ListInventorys({})
-            .then((response) => {
-                setInventoryList(response)
-            }).catch((error) => {
-                console.log(error)
-            })
-    }
-    const getItems = async () => {
-        await ListItems({}).then((response) => {
-            setListItems(response)
-        }).catch((error) => {
-            console.log(error)
-        })
-    }
     const validationSchema = Yup.object({
-        type: Yup.string().required('Campo obrigatório'),
-        inventory: Yup.string(),
+        transactionType: Yup.string().required('Campo obrigatório'),
+        inventory: Yup.string().when('transactionType', ([value], schema) => {
+            return value === transactionTypes.ADD ? schema.required('Campo obrigatório') : schema.nullable()
+        }),
         items: Yup.array().of(
             Yup.object().shape({
+                id: Yup.number(),
                 code: Yup.string().required(),
-                section: Yup.string().required(),
-                product: Yup.string().required(''),
-                d1: Yup.number().required(),
-                d2: Yup.number().required(),
-                d3: Yup.number().required(),
-                d4: Yup.number().required(),
-                meters: Yup.number().required()
-            })
-        )
+                section: Yup.string(),
+                product: Yup.string(),
+                d1: Yup.string(),
+                d2: Yup.string(),
+                d3: Yup.string(),
+                d4: Yup.string(),
+                meters: Yup.string()
+            }),
+        ).min(1, 'pelo menos 1 item')
     })
+    const formik = useFormik({
+        initialValues: {
+            transactionType: "",
+            inventory: '',
+            items: [] as IItem[]
+        },
+        validationSchema: validationSchema,
+        onSubmit: async (values, helper) => {
+            await createTransaction(values)
+                .then((response) => {
+                    ToastMessage({ type: 'success', message: 'Transação criada com sucesso!.' })
+                    helper.resetForm()
+                    return
+                }).catch((error) => {
+                    if (error.message) {
+                        ToastMessage({ type: 'error', message: error.message })
+                        return
+                    }
+                    ToastMessage({ type: 'error', message: 'Ocorreu um erro inesperado!.' })
+                    return
+                })
+        }
+    })
+    const addSelectItems = (items: IItem[]) => {
+        formik.setFieldValue('items', [...formik.values.items, ...items])
+    }
+    const addItem = (value: any) => {
+        formik.setFieldValue('inventory', value.inventory)
+        formik.setFieldValue('items', [...formik.values.items, value])
+    }
+    const handleChangeTransactionType = (e: SelectChangeEvent) => {
+        const { transactionType, items } = formik.values
+        if (transactionType === '' || items.length === 0) {
+            return formik.setFieldValue('transactionType', e.target.value)
+        }
+        const oldItems = items
+        const oldTransactionType = transactionType
+        formik.setFieldValue('items', savedItems.items)
+        formik.setFieldValue('transactionType', e.target.value)
+        setSavedItems({ type: oldTransactionType, items: oldItems })
+        return
 
+
+    }
     return (
-        <Box>
-            <Formik
-                initialValues={{
-                    type: "",
-                    inventory: '',
-                    items: [{
-                        code: undefined,
-                        section: '',
-                        product: undefined,
-                        d1: 0,
-                        d2: 0,
-                        d3: 0,
-                        d4: 0,
-                        meters: 0,
-                        name: '',
-                        volumeM3: 0,
-                    }] as IItem[]
-                }}
-                validationSchema={validationSchema}
-                onSubmit={(values) => console.log(values)}
-
-            >
-                {formik => (
-                    <Box padding={4} component='form' onSubmit={formik.handleSubmit} >
-                        <Grid container spacing={2}>
-                            <Grid item xs={6} >
-                                <Select
-                                    id='type'
-                                    name="type"
-                                    fullWidth
-                                    label='Tipo'
-                                    onChange={formik.handleChange}
-                                    value={formik.values.type}
-                                >
-                                    <MenuItem value={transactionTypes.ADD}>Entrada</MenuItem>
-                                    <MenuItem value={transactionTypes.REMOVE}>Saida</MenuItem>
-                                </Select>
-                            </Grid>
-                            <Grid item xs={6}>
-                            </Grid>
-                            {inventorysList.length > 0 &&
-                                <Grid item xs={6}>
-                                    <Select
-                                        fullWidth
-                                        disabled={formik.values.type === transactionTypes.REMOVE}
-                                        label='Patio'
-                                        name='inventory'
-                                        value={formik.values.inventory}
-                                        onChange={formik.handleChange}
-                                    >
-                                        {inventorysList.map((inventory) => (
-                                            <MenuItem key={inventory.id} value={inventory.id}>{inventory.name}</MenuItem>
-                                        ))}
-                                    </Select>
-                                </Grid>
-
-                            }
-                            <Grid item xs={12}>
-                                <Divider />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Button onClick={handleModal} variant="contained">Adicionar</Button>
-                            </Grid>
-                        </Grid>
-                        <ItemsSearchModal
-                            open={open}
-                            items={listItems}
-                            handleModal={handleModal}
-                            handleItems={(items: any) => formik.setFieldValue('items', [...formik.values.items, ...items])}
-                        />
-                        <ItemsList items={formik.values.items} />
-                    </Box >
-                )}
-            </Formik >
+        <Box component={Paper}>
+            <Box padding={4} component='form' onSubmit={formik.handleSubmit} >
+                <Grid container spacing={2}>
+                    <Grid item xs={6} >
+                        <Typography variant="overline" fontWeight='bolder'>Transação</Typography>
+                        <Select
+                            id='type'
+                            name="transactionType"
+                            fullWidth
+                            label='Tipo'
+                            onChange={handleChangeTransactionType}
+                            value={formik.values.transactionType}
+                        >
+                            <MenuItem value={transactionTypes.ADD}>Entrada</MenuItem>
+                            <MenuItem value={transactionTypes.REMOVE}>Saida</MenuItem>
+                        </Select>
+                    </Grid>
+                    <Grid item xs={6}>
+                    </Grid>
+                    <Grid item xs={12}>
+                        {formik.values.transactionType === transactionTypes.ADD && (
+                            <ItemForm
+                                handleSubmit={addItem}
+                                inventorySelected={formik.values.inventory}
+                            />
+                        )}
+                        {formik.values.transactionType === transactionTypes.REMOVE && (
+                            <React.Fragment>
+                                <TextField
+                                    onClick={handleModal}
+                                    placeholder="Procurar items..."
+                                    size="small"
+                                    type="search"
+                                    InputProps={{
+                                        endAdornment: (
+                                            <Search />
+                                        )
+                                    }}
+                                ></TextField>
+                                <ItemsSearchModal
+                                    open={open}
+                                    handleModal={handleModal}
+                                    handleItems={(items) => addSelectItems(items)}
+                                    itemsSelected={formik.values.items}
+                                />
+                            </React.Fragment>
+                        )}
+                    </Grid>
+                </Grid>
+                <ItemsList
+                    items={formik.values.items}
+                    removeItem={(index) => {
+                        const items = formik.values.items.slice();
+                        items.splice(index, 1);
+                        formik.setFieldValue('items', items);
+                    }}
+                />
+                <Box display='flex' justifyContent='flex-end' gap={1}>
+                    <Button onClick={() => formik.resetForm()} variant="contained" color="inherit">Cancelar</Button>
+                    <Button type="submit" variant="contained">Salvar</Button>
+                </Box>
+            </Box >
         </Box>
 
     )

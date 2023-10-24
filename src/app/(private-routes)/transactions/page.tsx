@@ -5,6 +5,7 @@ import { ListTransactions } from "@/services/transactionService"
 import { ITransacation, transactionTypes } from "@/types/transaction/transaction";
 import { Box, Button, Grid, MenuItem, Paper, Select } from "@mui/material"
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation";
 
 interface IQuery {
     from: string;
@@ -18,6 +19,8 @@ const Transactions = () => {
     useEffect(() => {
         getTransactions()
     }, [query])
+
+    const router = useRouter()
 
     const getTransactions = async () => {
         await ListTransactions({
@@ -44,7 +47,7 @@ const Transactions = () => {
         >
             <Grid container spacing={2}>
                 <Grid item xs>
-                    <Button variant="contained">
+                    <Button variant="contained" onClick={() => router.push('/transactions/transaction')}>
                         Nova transação
                     </Button>
                 </Grid>
