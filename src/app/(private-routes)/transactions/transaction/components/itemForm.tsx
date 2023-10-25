@@ -53,11 +53,12 @@ export const ItemForm = ({ handleSubmit, inventorySelected }: ItemFormProps) => 
     }
 
     const validationSchema = Yup.object({
-        inventory: Yup.string(),
-        product: Yup.number(),
+        inventory_id: Yup.string(),
+        product_id: Yup.number(),
         code: Yup.string().required(),
         section: Yup.string(),
-        name: Yup.string().required(),
+        scientificName: Yup.string().required(),
+        commonName: Yup.string().required(),
         d1: Yup.string().required(),
         d2: Yup.string().required(),
         d3: Yup.string().required(),
@@ -67,10 +68,11 @@ export const ItemForm = ({ handleSubmit, inventorySelected }: ItemFormProps) => 
     })
     const ProductForm = useFormik({
         initialValues: {
-            inventory: inventorySelected,
+            inventory_id: inventorySelected,
             code: '',
-            name: '',
-            product: '',
+            scientificName: '',
+            commonName: '',
+            product_id: '',
             section: '',
             d1: '0',
             d2: '0',
@@ -95,8 +97,9 @@ export const ItemForm = ({ handleSubmit, inventorySelected }: ItemFormProps) => 
     }
     const resetProduct = () => {
         ProductForm.setFieldValue('code', '')
-        ProductForm.setFieldValue('name', '')
-        ProductForm.setFieldValue('product', '')
+        ProductForm.setFieldValue('commonName', '')
+        ProductForm.setFieldValue('scientificName', '')
+        ProductForm.setFieldValue('product_id', '')
         ProductForm.setFieldValue('section', '')
         ProductForm.setFieldValue('d1', '0')
         ProductForm.setFieldValue('d2', '0')
@@ -115,8 +118,9 @@ export const ItemForm = ({ handleSubmit, inventorySelected }: ItemFormProps) => 
     }
 
     const onSelectProduct = (product: IProduct) => {
-        ProductForm.setFieldValue('product', product.id)
-        ProductForm.setFieldValue('name', product.name)
+        ProductForm.setFieldValue('product_id', product.id)
+        ProductForm.setFieldValue('scientificName', product.scientificName)
+        ProductForm.setFieldValue('commonName', product.commonName)
         setTimeout(() => {
             if (codeInputRef.current) {
                 codeInputRef.current.focus();
@@ -131,9 +135,9 @@ export const ItemForm = ({ handleSubmit, inventorySelected }: ItemFormProps) => 
                     <Select
                         fullWidth
                         label='Patio'
-                        name='inventory'
+                        name='inventory_id'
                         placeholder="Selecione o tipo de transação..."
-                        value={ProductForm.values.inventory}
+                        value={ProductForm.values.inventory_id}
                         onChange={ProductForm.handleChange}
                     >
                         {inventorysList.map((inventory) => (
@@ -141,7 +145,7 @@ export const ItemForm = ({ handleSubmit, inventorySelected }: ItemFormProps) => 
                         ))}
                     </Select>
                 </Grid>
-                {ProductForm.values.inventory && (
+                {ProductForm.values.inventory_id && (
                     <React.Fragment>
                         <Grid item xs={1}>
                             <Grid container direction="column">
@@ -150,9 +154,9 @@ export const ItemForm = ({ handleSubmit, inventorySelected }: ItemFormProps) => 
                                 </Grid>
                                 <Grid item>
                                     <CustomTextField
-                                        name='product'
+                                        name='product_id'
                                         inputRef={productInputRef}
-                                        value={ProductForm.values.product}
+                                        value={ProductForm.values.product_id}
                                         onChange={ProductForm.handleChange}
                                         InputProps={{
                                             endAdornment: (
@@ -171,13 +175,29 @@ export const ItemForm = ({ handleSubmit, inventorySelected }: ItemFormProps) => 
                         <Grid item xs>
                             <Grid container direction="column">
                                 <Grid item>
+                                    <Typography variant="caption">Cientifico</Typography>
+                                </Grid>
+                                <Grid item>
+                                    <CustomTextField
+                                        name='scientificName'
+                                        fullWidth
+                                        value={ProductForm.values.scientificName}
+                                        onChange={ProductForm.handleChange}
+                                        disabled={true}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid item xs>
+                            <Grid container direction="column">
+                                <Grid item>
                                     <Typography variant="caption">Nome</Typography>
                                 </Grid>
                                 <Grid item>
                                     <CustomTextField
-                                        name='name'
+                                        name='commonName'
                                         fullWidth
-                                        value={ProductForm.values.name}
+                                        value={ProductForm.values.commonName}
                                         onChange={ProductForm.handleChange}
                                         disabled={true}
                                     />

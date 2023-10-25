@@ -25,7 +25,7 @@ const TransactionForm = () => {
     }
     const validationSchema = Yup.object({
         transactionType: Yup.string().required('Campo obrigatório'),
-        inventory: Yup.string().when('transactionType', ([value], schema) => {
+        inventory_id: Yup.string().when('transactionType', ([value], schema) => {
             return value === transactionTypes.ADD ? schema.required('Campo obrigatório') : schema.nullable()
         }),
         items: Yup.array().of(
@@ -45,7 +45,7 @@ const TransactionForm = () => {
     const formik = useFormik({
         initialValues: {
             transactionType: "",
-            inventory: '',
+            inventory_id: '',
             items: [] as IItem[]
         },
         validationSchema: validationSchema,
@@ -69,7 +69,7 @@ const TransactionForm = () => {
         formik.setFieldValue('items', [...formik.values.items, ...items])
     }
     const addItem = (value: any) => {
-        formik.setFieldValue('inventory', value.inventory)
+        formik.setFieldValue('inventory_id', value.inventory_id)
         formik.setFieldValue('items', [...formik.values.items, value])
     }
     const handleChangeTransactionType = (e: SelectChangeEvent) => {
@@ -110,7 +110,7 @@ const TransactionForm = () => {
                         {formik.values.transactionType === transactionTypes.ADD && (
                             <ItemForm
                                 handleSubmit={addItem}
-                                inventorySelected={formik.values.inventory}
+                                inventorySelected={formik.values.inventory_id}
                             />
                         )}
                         {formik.values.transactionType === transactionTypes.REMOVE && (

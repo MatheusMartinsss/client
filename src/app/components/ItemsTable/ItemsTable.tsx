@@ -40,7 +40,7 @@ export const ItemsTable = ({ items }: ItemsTableProps) => {
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
                                     <TableCell component="th" scope="row">{row.code}</TableCell>
-                                    <TableCell>{row.name}</TableCell>
+                                    <TableCell>{row.commonName}</TableCell>
                                     <TableCell>{row.d1}</TableCell>
                                     <TableCell>{row.d2}</TableCell>
                                     <TableCell>{row.d3}</TableCell>

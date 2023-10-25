@@ -1,5 +1,5 @@
 import { IItem } from "@/types/items/item"
-import { Box, Button, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
+import { Box, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
 import CloseIcon from '@mui/icons-material/Close';
 
 interface ItemsTableProps {

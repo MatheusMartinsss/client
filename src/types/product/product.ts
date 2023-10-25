@@ -2,7 +2,8 @@ import { IItem } from "../items/item";
 
 export interface IProduct {
     id?: number;
-    name?: string;
+    commonName?: string;
+    scientificName?: string;
     description?: string;
     volumeTotal?: number;
     createdAt?: Date;

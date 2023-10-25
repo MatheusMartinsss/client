@@ -1,7 +1,7 @@
 
 export interface IItem {
     id?: number;
-    name: string;
+    commonName: string;
     code: number | undefined;
     d1: number;
     d2: number;
@@ -15,5 +15,5 @@ export interface IItem {
     updatedAt: Date;
     product: number | undefined;
     volumeM3: number;
-    removedAt?: Date;
+    removedAt: Date;
 }
