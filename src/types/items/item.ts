@@ -1,6 +1,7 @@
 
 export interface IItem {
     id?: number;
+    scientificName: string;
     commonName: string;
     code: number | undefined;
     d1: number;

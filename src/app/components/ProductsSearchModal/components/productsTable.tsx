@@ -58,7 +58,8 @@ export const ProductsTable = ({ products, onSelect, handleModal }: ProductsTable
                     <TableHead sx={{ backgroundColor: '#f0f0f0', position: 'sticky', top: 0, zIndex: 999 }} >
                         <TableRow>
                             <TableCell>#</TableCell>
-                            <TableCell>Produto</TableCell>
+                            <TableCell>Nome Cientifico</TableCell>
+                            <TableCell>Nome Popular</TableCell>
                             <TableCell>Descrição</TableCell>
                         </TableRow>
                     </TableHead>
@@ -83,7 +84,8 @@ export const ProductsTable = ({ products, onSelect, handleModal }: ProductsTable
 
                                     >
                                         <TableCell component="th" scope="row">{row.id}</TableCell>
-                                        <TableCell>{row.name}</TableCell>
+                                        <TableCell>{row.scientificName}</TableCell>
+                                        <TableCell>{row.commonName}</TableCell>
                                         <TableCell>{row.description}</TableCell>
                                     </TableRow>
                                 )

@@ -21,8 +21,9 @@ export const ItemsList = ({ items, removeItem }: ItemsTableProps) => {
                     <TableHead sx={{ backgroundColor: '#f0f0f0', position: 'sticky', top: 0, zIndex: 999 }} >
                         <TableRow>
                             <TableCell>Plaqueta</TableCell>
-                            <TableCell>Produto</TableCell>
-                            <TableCell>Seccção</TableCell>
+                            <TableCell>Nome Cientifico</TableCell>
+                            <TableCell>Nome Popular</TableCell>
+                            <TableCell>Secção</TableCell>
                             <TableCell>D1</TableCell>
                             <TableCell>D2</TableCell>
                             <TableCell>D3</TableCell>
@@ -43,7 +44,8 @@ export const ItemsList = ({ items, removeItem }: ItemsTableProps) => {
                                     }}
                                 >
                                     <TableCell component="th" scope="row">{row.code}</TableCell>
-                                    <TableCell>{row.name}</TableCell>
+                                    <TableCell>{row.scientificName}</TableCell>
+                                    <TableCell>{row.commonName}</TableCell>
                                     <TableCell>{row.section}</TableCell>
                                     <TableCell>{row.d1}</TableCell>
                                     <TableCell>{row.d2}</TableCell>

@@ -28,10 +28,6 @@ export const ItemsSearchTable = ({ items, handleConfirm, handleModal }: ItemsTab
         return itemsSelected.some((selectedItem) => selectedItem.id === id);
     };
 
-    const volumeTotal = items.reduce((a, b) => {
-        return a + b.volumeM3
-    }, 0.00).toFixed(3)
-
     const itemsSelectedVolume = itemsSelected.reduce((a, b) => {
         return a + b.volumeM3
     }, 0.00).toFixed(3)
@@ -77,7 +73,9 @@ export const ItemsSearchTable = ({ items, handleConfirm, handleModal }: ItemsTab
                         <TableRow>
                             <TableCell>#</TableCell>
                             <TableCell>Plaqueta</TableCell>
-                            <TableCell>Produto</TableCell>
+                            <TableCell>Nome Cientifico</TableCell>
+                            <TableCell>Nome Popular</TableCell>
+                            <TableCell>Secção</TableCell>
                             <TableCell>D1</TableCell>
                             <TableCell>D2</TableCell>
                             <TableCell>D3</TableCell>
@@ -107,7 +105,9 @@ export const ItemsSearchTable = ({ items, handleConfirm, handleModal }: ItemsTab
                                             />
                                         </TableCell>
                                         <TableCell component="th" scope="row">{row.code}</TableCell>
-                                        <TableCell>{row.name}</TableCell>
+                                        <TableCell>{row.scientificName}</TableCell>
+                                        <TableCell>{row.commonName}</TableCell>
+                                        <TableCell>{row.section}</TableCell>
                                         <TableCell>{row.d1}</TableCell>
                                         <TableCell>{row.d2}</TableCell>
                                         <TableCell>{row.d3}</TableCell>
@@ -149,24 +149,20 @@ export const ItemsSearchTable = ({ items, handleConfirm, handleModal }: ItemsTab
                 alignItems='center'
                 padding={2}
                 sx={{ height: 80, backgroundColor: '#f0f0f0' }} >
-
-                <Box display='flex' width='100%' sx={{ justifyContent: 'flex-end' }}>
-                    <Typography variant="subtitle1" fontWeight='bolder'>Volume {volumeTotal}M3</Typography>
-                </Box>
-            </Box>
-            <Box
-                display='flex'
-                width='100%'
-                sx={{ justifyContent: 'flex-end', padding: 2 }}
-            >
-                <Button
-                    variant='contained'
-                    disabled={itemsSelected.length === 0}
-                    onClick={handleItems}
-
+                <Box
+                    display='flex'
+                    width='100%'
+                    sx={{ justifyContent: 'flex-end', padding: 2 }}
                 >
-                    Confirmar - {itemsSelectedVolume}M3
-                </Button>
+                    <Button
+                        variant='contained'
+                        disabled={itemsSelected.length === 0}
+                        onClick={handleItems}
+
+                    >
+                        Confirmar - {itemsSelectedVolume}M3
+                    </Button>
+                </Box>
             </Box>
 
         </Box>

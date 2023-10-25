@@ -22,7 +22,9 @@ export const ItemsTable = ({ items }: ItemsTableProps) => {
                         <TableHead sx={{ backgroundColor: '#f0f0f0', position: 'sticky', top: 0 }} >
                             <TableRow>
                                 <TableCell>Plaqueta</TableCell>
-                                <TableCell>Produto</TableCell>
+                                <TableCell>Nome Cientifico</TableCell>
+                                <TableCell>Nome Popular</TableCell>
+                                <TableCell>Secção</TableCell>
                                 <TableCell>D1</TableCell>
                                 <TableCell>D2</TableCell>
                                 <TableCell>D3</TableCell>
@@ -40,7 +42,9 @@ export const ItemsTable = ({ items }: ItemsTableProps) => {
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
                                     <TableCell component="th" scope="row">{row.code}</TableCell>
+                                    <TableCell>{row.scientificName}</TableCell>
                                     <TableCell>{row.commonName}</TableCell>
+                                    <TableCell>{row.section}</TableCell>
                                     <TableCell>{row.d1}</TableCell>
                                     <TableCell>{row.d2}</TableCell>
                                     <TableCell>{row.d3}</TableCell>
