@@ -1,18 +1,24 @@
-import { IItem } from "@/types/items/item"
-import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
+import { Box, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
 import TableCellDate from "../TableCellDate/TableCellDate"
 import { ITransacation } from "@/types/transaction/transaction"
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import DeleteOutline from "@mui/icons-material/DeleteOutline";
 import TransactionTypeCell from "@/app/(private-routes)/transactions/components/TransactionTypeCell"
-
+import { useRouter, usePathname } from "next/navigation";
 interface TransactionsTableProps {
     transactions: ITransacation[]
+    onDelete: (id: string) => void
 }
 
-export const TransactionsTable = ({ transactions }: TransactionsTableProps) => {
+export const TransactionsTable = ({ transactions, onDelete }: TransactionsTableProps) => {
+    const router = useRouter()
+    const path = usePathname()
     const volumeTotal = transactions?.reduce((a, b) => {
         return a + b.volumeTotal
     }, 0.00).toFixed(3)
-
+    const handleDelete = (id: number) => {
+        onDelete(id.toString())
+    }
     return (
         transactions?.length > 0 ? (
             <Box >
@@ -28,6 +34,7 @@ export const TransactionsTable = ({ transactions }: TransactionsTableProps) => {
                                 <TableCell>Tipo</TableCell>
                                 <TableCell>Volume</TableCell>
                                 <TableCell>Emissão</TableCell>
+                                <TableCell align="center">Opções</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody >
@@ -40,6 +47,14 @@ export const TransactionsTable = ({ transactions }: TransactionsTableProps) => {
                                     <TransactionTypeCell type={row.transactionType} />
                                     <TableCell>{row.volumeTotal}</TableCell>
                                     <TableCellDate date={row.createdAt} />
+                                    <TableCell align="center">
+                                        <IconButton onClick={() => handleDelete(row.id)}>
+                                            <DeleteOutline />
+                                        </IconButton>
+                                        <IconButton onClick={() => router.push(`${path}/transaction/${row.id}`)}>
+                                            <VisibilityIcon />
+                                        </IconButton>
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

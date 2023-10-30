@@ -10,13 +10,13 @@ import * as Yup from 'yup'
 import ProductSearchModal from "@/app/components/ProductsSearchModal/productsSearchModal";
 import { DecimalInput } from "@/app/components/DecimalInput/DecimalInput";
 import { calculateVolume } from "@/utils/calculateVolume";
-import { ListInventorys } from "@/services/inventoryService";
-import { inventory } from "@/types/inventory/inventory";
 import React from "react";
+import { IItem } from "@/types/items/item";
 
 interface ItemFormProps {
     handleSubmit: (item: any) => void
     inventorySelected: string | ''
+    item: IItem | null
 }
 
 const CustomTextField = styled(TextField)({})
@@ -27,7 +27,7 @@ const CustomDecimalTextField = styled(DecimalInput)({})
 CustomDecimalTextField.defaultProps = {
     size: 'small'
 }
-export const ItemForm = ({ handleSubmit, inventorySelected }: ItemFormProps) => {
+export const ItemForm = ({ handleSubmit, inventorySelected, item }: ItemFormProps) => {
     const [open, setOpen] = useState<boolean>(false)
     const codeInputRef = useRef<HTMLInputElement | null>(null);
     const sectionInputRef = useRef<HTMLInputElement | null>(null);
@@ -38,21 +38,9 @@ export const ItemForm = ({ handleSubmit, inventorySelected }: ItemFormProps) => 
     const metersInputRef = useRef<HTMLInputElement | null>(null);
     const productInputRef = useRef<HTMLInputElement | null>(null);
     const submitButtonRef = useRef<HTMLButtonElement | null>(null)
-    const [inventorysList, setInventoryList] = useState<inventory[]>([])
-
-    useEffect(() => {
-        getInventorys()
-    }, [])
-
-    const getInventorys = async () => {
-        await ListInventorys({}).then((response) => {
-            setInventoryList(response)
-        }).catch((error) => {
-            console.log(error)
-        })
-    }
 
     const validationSchema = Yup.object({
+        id: Yup.string().nullable(),
         inventory_id: Yup.string(),
         product_id: Yup.number(),
         code: Yup.string().required(),
@@ -68,6 +56,7 @@ export const ItemForm = ({ handleSubmit, inventorySelected }: ItemFormProps) => 
     })
     const ProductForm = useFormik({
         initialValues: {
+            id: null,
             inventory_id: inventorySelected,
             code: '',
             scientificName: '',
@@ -96,6 +85,7 @@ export const ItemForm = ({ handleSubmit, inventorySelected }: ItemFormProps) => 
         setOpen((state) => !state)
     }
     const resetProduct = () => {
+        ProductForm.setFieldValue('id', null)
         ProductForm.setFieldValue('code', '')
         ProductForm.setFieldValue('commonName', '')
         ProductForm.setFieldValue('scientificName', '')
@@ -127,25 +117,26 @@ export const ItemForm = ({ handleSubmit, inventorySelected }: ItemFormProps) => 
             }
         }, 0);
     }
+    useEffect(() => {
+        if (item) {
+            ProductForm.setFieldValue('id', item.id)
+            ProductForm.setFieldValue('code', item.code)
+            ProductForm.setFieldValue('commonName', item.commonName)
+            ProductForm.setFieldValue('scientificName', item.scientificName)
+            ProductForm.setFieldValue('product_id', item.product_id)
+            ProductForm.setFieldValue('section', item.section)
+            ProductForm.setFieldValue('d1', item.d1)
+            ProductForm.setFieldValue('d2', item.d2)
+            ProductForm.setFieldValue('d3', item.d3)
+            ProductForm.setFieldValue('d4', item.d4)
+            ProductForm.setFieldValue('meters', item.meters)
+            ProductForm.setFieldValue('volumeM3', item.volumeM3)
+        }
+    }, [item])
     return (
         <Box display='flex' gap={2} component='form' onSubmit={ProductForm.handleSubmit} >
             <Grid container spacing={2} >
-                <Grid item xs={12}>
-                    <Typography variant="overline" fontWeight='bolder'>Inventário*</Typography>
-                    <Select
-                        fullWidth
-                        label='Patio'
-                        name='inventory_id'
-                        placeholder="Selecione o tipo de transação..."
-                        value={ProductForm.values.inventory_id}
-                        onChange={ProductForm.handleChange}
-                    >
-                        {inventorysList.map((inventory) => (
-                            <MenuItem key={inventory.id} value={inventory.id}>{inventory.name}</MenuItem>
-                        ))}
-                    </Select>
-                </Grid>
-                {ProductForm.values.inventory_id && (
+                {inventorySelected && (
                     <React.Fragment>
                         <Grid item xs={1}>
                             <Grid container direction="column">

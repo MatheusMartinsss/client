@@ -12,6 +12,7 @@ export interface IItem {
     section: string;
     inventory?: number;
     description?: string;
+    product_id: number;
     createdAt: Date;
     updatedAt: Date;
     product: number | undefined;

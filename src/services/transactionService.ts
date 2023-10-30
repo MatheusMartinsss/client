@@ -32,3 +32,41 @@ export const createTransaction = async (body: any) => {
         throw new Error('Erro interno, entre em contato com o suporte!');
     }
 };
+
+export const findOneTransaction = async (id: number) => {
+    try {
+        const response = await api.get(`/transaction/${id}`);
+        return response.data;
+    } catch (error: any) {
+        if (error.response.data.status === 409) {
+            throw new Error(error.response.data.message);
+        }
+        throw new Error('Erro interno, entre em contato com o suporte!');
+    }
+}
+
+export const updateTransaction = async (id: string, body: any) => {
+
+    try {
+        const response = await api.patch(`/transaction/${id}`, body)
+        return response.data
+    } catch (error: any) {
+        if (error.response.data.status === 409) {
+            throw new Error(error.response.data.message);
+        }
+        throw new Error('Erro interno, entre em contato com o suporte!');
+    }
+
+}
+
+export const deleteTransaction = async (id: string) => {
+    try {
+        const response = await api.delete(`/transaction/${id}`)
+        return response.data
+    } catch (error: AxiosError | any) {
+        if (error.response.data.status === 409) {
+            throw new Error(error.response.data.message);
+        }
+        throw new Error('Erro interno, entre em contato com o suporte!');
+    }
+}

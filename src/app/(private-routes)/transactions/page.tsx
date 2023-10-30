@@ -1,11 +1,12 @@
 "use client"
 import FilterDateInput from "@/app/components/FilterDateInput/FilterDateInput";
 import TransactionsTable from "@/app/components/TransactionsTable/TransactionsTable";
-import { ListTransactions } from "@/services/transactionService"
+import { ListTransactions, deleteTransaction } from "@/services/transactionService"
 import { ITransacation, transactionTypes } from "@/types/transaction/transaction";
 import { Box, Button, Grid, MenuItem, Paper, Select } from "@mui/material"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation";
+import ToastMessage from "@/app/components/Toast";
 
 interface IQuery {
     from: string;
@@ -16,6 +17,7 @@ interface IQuery {
 const Transactions = () => {
     const [query, setQuery] = useState<IQuery>({ from: '', to: '', type: 'Todos' })
     const [transactions, setTransactions] = useState<ITransacation[]>([])
+
     useEffect(() => {
         getTransactions()
     }, [query])
@@ -34,7 +36,17 @@ const Transactions = () => {
             console.log(error)
         })
     }
-
+    const removeTransaction = async (id: string) => {
+        await deleteTransaction(id).then((response) => {
+            if (response) {
+                ToastMessage({ type: 'success', message: 'Transação excluida com sucesso!' })
+                const newValue = transactions.filter((transaction) => transaction.id !== parseInt(id))
+                setTransactions(newValue)
+            }
+        }).catch((error) => {
+            ToastMessage({ type: 'error', message: 'Erro interno, entre em contato com o suporte!.' })
+        })
+    }
     return (
         <Box
             component={Paper}
@@ -81,7 +93,10 @@ const Transactions = () => {
                     />
                 </Grid>
             </Grid>
-            <TransactionsTable transactions={transactions} />
+            <TransactionsTable
+                transactions={transactions}
+                onDelete={removeTransaction}
+            />
         </Box>
     )
 }

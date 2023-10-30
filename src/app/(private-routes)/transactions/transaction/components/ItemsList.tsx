@@ -1,15 +1,23 @@
 import { IItem } from "@/types/items/item"
 import { Box, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
 import CloseIcon from '@mui/icons-material/Close';
+import EditIcon from "@mui/icons-material/Edit"
 
 interface ItemsTableProps {
     items: IItem[]
-    removeItem: (index: number) => void
+    removeItem: (index: number, item: IItem) => void
+    editItem: (item: IItem) => void
+    allowEdit: boolean
 }
 
-export const ItemsList = ({ items, removeItem }: ItemsTableProps) => {
+export const ItemsList = ({ items, removeItem, editItem, allowEdit }: ItemsTableProps) => {
     //@ts-ignore
     const volumeTotal = items.reduce((a, b) => a + parseFloat(b.volumeM3), 0.00).toFixed(3)
+
+    const handleEdit = (item: IItem) => {
+        if (!allowEdit) return
+        editItem(item)
+    }
     return (
         <Box >
             <TableContainer sx={{
@@ -54,9 +62,16 @@ export const ItemsList = ({ items, removeItem }: ItemsTableProps) => {
                                     <TableCell>{row.meters}</TableCell>
                                     <TableCell>{row.volumeM3}</TableCell>
                                     <TableCell>
-                                        <IconButton onClick={() => removeItem(index)}>
-                                            <CloseIcon />
-                                        </IconButton>
+                                        {!allowEdit &&
+                                            <IconButton onClick={() => removeItem(index, row)}>
+                                                <CloseIcon />
+                                            </IconButton>
+                                        }
+                                        {allowEdit &&
+                                            <IconButton onClick={() => handleEdit(row)} >
+                                                <EditIcon />
+                                            </IconButton>
+                                        }
                                     </TableCell>
                                 </TableRow>
                             ))
