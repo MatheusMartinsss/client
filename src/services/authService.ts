@@ -11,8 +11,8 @@ export const authService = async (email: string, password: string) => {
         if (err.response && err.response.status === 401) {
             throw new Unauthorized('Acesso negado!');
         } else {
-            // Trate outros erros de acordo com suas necessidades
-            throw error; // Lança o erro original se não for um erro de autenticação
+           
+            throw error; 
         }
     }
 };

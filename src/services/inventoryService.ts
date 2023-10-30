@@ -1,3 +1,4 @@
+import { ICreateInventory, inventory } from "@/types/inventory/inventory";
 import api from "@/utils/api"
 
 export const ListInventorys = async ({ includeVolume = false, includeRemoved = false }:
@@ -33,3 +34,13 @@ export const findOneInventory = async ({ inventoryId, includeArchived = false, s
         console.log('error', error)
     }
 };
+
+export const createInventory = async (body: ICreateInventory): Promise<inventory> => {
+    try {
+        const response = await api.post('/inventory', { ...body })
+        return response.data
+    } catch (error) {
+        console.log('error', error)
+        throw Error('Não foi possivel criar o inventário!.')
+    }
+}

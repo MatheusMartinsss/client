@@ -9,3 +9,5 @@ export interface inventory {
     updatedAt?: Date;
     items?: IItem[]
 }
+
+export interface ICreateInventory extends Partial<inventory> {}
