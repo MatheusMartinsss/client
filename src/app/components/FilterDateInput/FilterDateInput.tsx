@@ -3,7 +3,7 @@ import TextField from '@mui/material/TextField';
 import { FormControl, InputLabel } from '@mui/material';
 
 interface DateInputProps {
-    label: string;
+    label?: string;
     value: string;
     onChange: (newValue: string) => void;
 }

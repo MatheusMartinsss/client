@@ -2,13 +2,13 @@ import { Button } from "@mui/material";
 import { FC } from "react";
 
 interface CustomButtonProps {
-    isActive: boolean;
+    isActive?: boolean;
     onClick: () => void;
     children: React.ReactNode;
 }
 
 
-const FilterButton: FC<CustomButtonProps> = ({ isActive, onClick, children }) => {
+const FilterButton: FC<CustomButtonProps> = ({ isActive = false, onClick, children }) => {
     return (
         <Button
             variant="outlined"

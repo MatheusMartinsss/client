@@ -12,11 +12,15 @@ export const ItemsTable = ({ items }: ItemsTableProps) => {
     }, 0.00).toFixed(3)
     return (
         items.length ? (
-            <Box >
+            <Box sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                width: '100%'
+            }} >
                 <TableContainer sx={{
                     marginTop: 2,
                     overflowY: 'auto',
-                    height: 450
+                    height: 450,
                 }}>
                     <Table >
                         <TableHead sx={{ backgroundColor: '#f0f0f0', position: 'sticky', top: 0 }} >
