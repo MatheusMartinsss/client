@@ -60,7 +60,6 @@ export const ProductsTable = ({ products, onSelect, handleModal }: ProductsTable
                             <TableCell>#</TableCell>
                             <TableCell>Nome Cientifico</TableCell>
                             <TableCell>Nome Popular</TableCell>
-                            <TableCell>Descrição</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody >
@@ -86,12 +85,11 @@ export const ProductsTable = ({ products, onSelect, handleModal }: ProductsTable
                                         <TableCell component="th" scope="row">{row.id}</TableCell>
                                         <TableCell>{row.scientificName}</TableCell>
                                         <TableCell>{row.commonName}</TableCell>
-                                        <TableCell>{row.description}</TableCell>
                                     </TableRow>
                                 )
                             })) : (
                                 <TableRow>
-                                    <TableCell colSpan={10}>
+                                    <TableCell colSpan={12}>
                                         <Box
                                             component={Paper}
                                             display="flex"
