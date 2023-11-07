@@ -13,7 +13,12 @@ import { ItemForm } from "../Item/ItemCreateForm";
 import { ListInventorys } from "@/services/inventoryService";
 import { inventory } from "@/types/inventory/inventory";
 
-const TransactionAddForm = () => {
+interface TransactionAddFormProps {
+    onSucces: (item: IItem) => void
+    onCancel: () => void
+}
+
+const TransactionAddForm = ({ onSucces, onCancel }: TransactionAddFormProps) => {
     const [inventorysList, setInventoryList] = useState<inventory[]>([])
     const [item, setItem] = useState<IItem | null>(null)
     useEffect(() => {
@@ -54,6 +59,7 @@ const TransactionAddForm = () => {
         onSubmit: async (values, helper) => {
             await createTransaction(values).then((response) => {
                 ToastMessage({ type: 'success', message: 'Transação criada com sucesso!.' })
+                onSucces(response)
                 helper.resetForm()
                 return
             }).catch((error) => {
@@ -82,6 +88,12 @@ const TransactionAddForm = () => {
 
     const handleEditItem = (item: IItem) => {
         setItem(item)
+    }
+    const handleCancel = () => {
+        formik.resetForm()
+        if (onCancel) {
+            onCancel()
+        }
     }
     return (
         <Box component='form' onSubmit={formik.handleSubmit} >
@@ -124,7 +136,7 @@ const TransactionAddForm = () => {
                 editItem={handleEditItem}
             />
             <Box display='flex' justifyContent='flex-end' gap={1}>
-                <Button onClick={() => formik.resetForm()} variant="contained" color="inherit">Cancelar</Button>
+                <Button onClick={handleCancel} variant="contained" color="inherit">Cancelar</Button>
                 <Button type="submit" variant="contained">Salvar</Button>
             </Box>
         </Box >

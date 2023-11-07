@@ -1,22 +1,61 @@
 import { IItem } from "@/types/items/item"
-import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
+import { Box, Checkbox, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
 import TableCellDate from "../TableCellDate/TableCellDate"
-
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 interface ItemsTableProps {
     items: IItem[]
+    handleSelectItem: (item: IItem) => void
+    itemsSelected: IItem[]
+    clearItemsSelected: () => void
 }
 
-export const ItemsTable = ({ items }: ItemsTableProps) => {
-    const volumeTotal = items.reduce((a, b) => {
+export const ItemsTable = ({ items, handleSelectItem, itemsSelected, clearItemsSelected }: ItemsTableProps) => {
+
+    const SelectItem = (item: IItem) => {
+        handleSelectItem(item)
+    }
+    const isSelected = (id: number | undefined) => {
+        return itemsSelected?.some((selectedItem) => selectedItem.id === id);
+    };
+
+    const itemsSelectedVolume = itemsSelected.reduce((a, b) => {
         return a + b.volumeM3
     }, 0.00).toFixed(3)
+
+    const volumeTotal = items?.reduce((a, b) => {
+        return a + b.volumeM3
+    }, 0.00).toFixed(3)
+
+    const clearItemsSelect = () => {
+
+    }
     return (
-        items.length ? (
+        items?.length ? (
             <Box sx={{
                 display: 'flex',
                 flexDirection: 'column',
                 width: '100%'
             }} >
+                {itemsSelected.length > 0 &&
+                    <Box
+                        mt={2}
+                        padding={2}
+                        display='flex'
+                        justifyContent='space-between'
+                        alignItems='center'
+                        sx={{ backgroundColor: '#f0f0f0' }}
+                    >
+                        <>
+                            <Typography>{itemsSelected.length} Selecionados</Typography>
+                            <IconButton
+                                size="small"
+                                onClick={clearItemsSelect}
+                            >
+                                <DeleteOutlineIcon />
+                            </IconButton>
+                        </>
+                    </Box>
+                }
                 <TableContainer sx={{
                     marginTop: 2,
                     overflowY: 'auto',
@@ -25,6 +64,7 @@ export const ItemsTable = ({ items }: ItemsTableProps) => {
                     <Table >
                         <TableHead sx={{ backgroundColor: '#f0f0f0', position: 'sticky', top: 0 }} >
                             <TableRow>
+                                <TableCell>#</TableCell>
                                 <TableCell>Plaqueta</TableCell>
                                 <TableCell>Nome Cientifico</TableCell>
                                 <TableCell>Nome Popular</TableCell>
@@ -40,25 +80,36 @@ export const ItemsTable = ({ items }: ItemsTableProps) => {
                             </TableRow>
                         </TableHead>
                         <TableBody >
-                            {items.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-                                    <TableCell component="th" scope="row">{row.code}</TableCell>
-                                    <TableCell>{row.scientificName}</TableCell>
-                                    <TableCell>{row.commonName}</TableCell>
-                                    <TableCell>{row.section}</TableCell>
-                                    <TableCell>{row.d1}</TableCell>
-                                    <TableCell>{row.d2}</TableCell>
-                                    <TableCell>{row.d3}</TableCell>
-                                    <TableCell>{row.d4}</TableCell>
-                                    <TableCell>{row.meters}</TableCell>
-                                    <TableCell>{row.volumeM3}</TableCell>
-                                    <TableCellDate date={row.createdAt} />
-                                    <TableCellDate date={row.removedAt} />
-                                </TableRow>
-                            ))}
+                            {items.map((row) => {
+                                const itemIsSelected = isSelected(row.id)
+                                return (
+                                    <TableRow
+                                        onClick={() => SelectItem(row)}
+                                        key={row.id}
+                                        selected={itemIsSelected}
+                                        role="checkbox"
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    >
+                                        <TableCell padding="checkbox">
+                                            <Checkbox
+                                                checked={itemIsSelected}
+                                            />
+                                        </TableCell>
+                                        <TableCell component="th" scope="row">{row.code}</TableCell>
+                                        <TableCell>{row.scientificName}</TableCell>
+                                        <TableCell>{row.commonName}</TableCell>
+                                        <TableCell>{row.section}</TableCell>
+                                        <TableCell>{row.d1}</TableCell>
+                                        <TableCell>{row.d2}</TableCell>
+                                        <TableCell>{row.d3}</TableCell>
+                                        <TableCell>{row.d4}</TableCell>
+                                        <TableCell>{row.meters}</TableCell>
+                                        <TableCell>{row.volumeM3}</TableCell>
+                                        <TableCellDate date={row.createdAt} />
+                                        <TableCellDate date={row.removedAt} />
+                                    </TableRow>
+                                )
+                            })}
                         </TableBody>
                     </Table>
                 </TableContainer>

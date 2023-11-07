@@ -11,18 +11,22 @@ import ItemsTable from "@/app/components/ItemsTable/ItemsTable";
 import { inventory } from "@/types/inventory/inventory";
 import { ListInventorys } from "@/services/inventoryService";
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
+import CarpenterRoundedIcon from '@mui/icons-material/CarpenterRounded';
 import Modal from "@/app/components/Modal/Modal";
 import TransactionAddForm from "@/app/components/Forms/Transaction/TransactionAddForm";
+import TransactionRemoveForm from "@/app/components/Forms/Transaction/TransactionRemoveForm";
 
 enum Forms {
     add = 'add',
+    remove = 'remove'
 }
 export default function Home() {
     const [items, setItems] = useState<IItem[]>([])
     const [query, setQuery] = useState({ inventoryId: '', active: true, includeArchived: false, text: '', from: '', to: '' })
     const [inventorysList, setInventorysList] = useState<inventory[]>([])
     const [open, setOpen] = useState<boolean>(false)
-    const [form, setForm] = useState<Forms | ''>('')
+    const [form, setForm] = useState<Forms | null>(null)
+    const [itemsSelected, setItemsSelected] = useState<IItem[]>([])
     useEffect(() => {
         getInventorys()
     }, [])
@@ -30,7 +34,13 @@ export default function Home() {
         getItems()
     }, [query])
 
-    const handleModal = () => setOpen((state) => !state)
+    const handleModal = (form?: Forms | null) => {
+        setOpen((state) => !state)
+        setForm(form || null)
+        if (!form) {
+            clearItemsSelected()
+        }
+    }
 
     const getInventorys = async () => {
         await ListInventorys({
@@ -71,6 +81,33 @@ export default function Home() {
             setQuery((state) => ({ ...state, inventoryId: event.target.value }))
         }
 
+    }
+    const isSelected = (id: number | undefined) => {
+        return itemsSelected?.some((selectedItem) => selectedItem.id === id);
+    };
+
+    const onSelectItem = (item: IItem) => {
+        const itemIsSelected = isSelected(item.id)
+        if (itemIsSelected) {
+            const newState = itemsSelected?.filter((items) => items.id !== item.id)
+            setItemsSelected([...newState])
+        } else {
+            setItemsSelected([...itemsSelected, item])
+        }
+    }
+    const clearItemsSelected = () => {
+        setItemsSelected([])
+    }
+
+    const onCreateItemSucces = (item: any) => {
+        getItems()
+        getInventorys()
+        handleModal(null)
+    }
+    const onRemoveItemsSuccess = (result: any) => {
+        getItems()
+        getInventorys()
+        handleModal(null)
     }
 
     return (
@@ -144,7 +181,7 @@ export default function Home() {
                             id="inventory-select"
                             size="small"
                         >
-                            {inventorysList.map((item: inventory) => (
+                            {inventorysList?.length > 0 && inventorysList?.map((item: inventory) => (
                                 <MenuItem
                                     key={item.id}
                                     value={item.id}>
@@ -162,7 +199,12 @@ export default function Home() {
                     <Box sx={{
                         width: '100%'
                     }}>
-                        {items && <ItemsTable items={items} />}
+                        <ItemsTable
+                            items={items}
+                            handleSelectItem={onSelectItem}
+                            itemsSelected={itemsSelected}
+                            clearItemsSelected={clearItemsSelected}
+                        />
                     </Box>
                     <Box
                         sx={{
@@ -177,7 +219,7 @@ export default function Home() {
                         <IconButton
                             name="add"
                             size="large"
-                            onClick={handleModal}
+                            onClick={() => handleModal(Forms.add)}
                             sx={{
                                 width: '50px',
                                 height: '50px',
@@ -188,15 +230,42 @@ export default function Home() {
                         >
                             <AddCircleOutlineRoundedIcon sx={{ width: '100%', height: '100%' }} />
                         </IconButton>
+                        <IconButton
+                            name="add"
+                            size="large"
+                            onClick={() => handleModal(Forms.remove)}
+                            sx={{
+                                width: '50px',
+                                height: '50px',
+                                backgroundColor: '#f5f5f5',
+                                borderRadius: '50%',
+                                margin: '0 0 20px 0',
+                                boxShadow: itemsSelected.length > 0 ? '0 0 10px rgba(255, 0, 0, 0.5)' : 'none',
+                            }}
+                        >
+                            <CarpenterRoundedIcon sx={{ width: '100%', height: '100%' }} />
+                        </IconButton>
 
                     </Box>
                 </Box>
             </Box>
             <Modal
                 open={open}
-                handleModal={handleModal} 
+                handleModal={handleModal}
             >
-                <TransactionAddForm />
+                {form === Forms.add &&
+                    <TransactionAddForm
+                        onSucces={onCreateItemSucces}
+                        onCancel={() => handleModal(null)}
+                    />
+                }
+                {form === Forms.remove &&
+                    <TransactionRemoveForm
+                        items={itemsSelected}
+                        onSucces={onRemoveItemsSuccess}
+                        onCancel={() => handleModal(null)}
+                    />
+                }
             </Modal>
         </Box >
     )

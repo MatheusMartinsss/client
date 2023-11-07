@@ -6,7 +6,7 @@ import EditIcon from "@mui/icons-material/Edit"
 interface ItemsTableProps {
     items: IItem[]
     removeItem: (index: number, item: IItem) => void
-    editItem: (item: IItem) => void
+    editItem?: (item: IItem) => void
     allowEdit: boolean
 }
 
@@ -16,7 +16,9 @@ export const ItemsList = ({ items, removeItem, editItem, allowEdit }: ItemsTable
 
     const handleEdit = (item: IItem) => {
         if (!allowEdit) return
-        editItem(item)
+        if (editItem) {
+            editItem(item)
+        }
     }
     return (
         <Box >
@@ -89,7 +91,7 @@ export const ItemsList = ({ items, removeItem, editItem, allowEdit }: ItemsTable
                                             minHeight: '320px',
                                         }}
                                     >
-                                    
+
                                     </Box>
                                 </TableCell>
                             </TableRow>
