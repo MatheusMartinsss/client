@@ -31,8 +31,8 @@ export const ProductsTable = ({ products }: ProductsTableProps) => {
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
                                     <TableCell>{row.scientificName}</TableCell>
-                                    <TableCell>{row.commonName}</TableCell>                    
-                                    <TableCell>{row.volumeTotal || '0.00'}</TableCell>
+                                    <TableCell>{row.commonName}</TableCell>
+                                    <TableCell>{row.volumeM3 || '0.00'}</TableCell>
                                     <TableCellDate date={row.createdAt} />
                                 </TableRow>
                             ))}

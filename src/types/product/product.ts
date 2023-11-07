@@ -5,7 +5,7 @@ export interface IProduct {
     commonName?: string;
     scientificName?: string;
     description?: string;
-    volumeTotal?: number;
+    volumeM3?: number;
     createdAt: Date;
     updatedAt: Date;
     items?: IItem[];
