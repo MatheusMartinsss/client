@@ -1,15 +1,49 @@
 import { IItem } from "@/types/items/item"
-import { Box, Checkbox, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
+import { Box, Checkbox, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, TableSortLabel } from "@mui/material"
 import TableCellDate from "../TableCellDate/TableCellDate"
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import React from "react";
+
 interface ItemsTableProps {
     items: IItem[]
     handleSelectItem: (item: IItem) => void
     itemsSelected: IItem[]
     clearItemsSelected: () => void
+    handleSortChange: (key: string) => void
+    order?: "asc" | "desc"
+    orderBy?: string
 }
+const colummns = [{
+    id: '', label: '#', sortable: false,
+}, {
+    id: 'code', label: 'Plaqueta', sortable: true
+}, {
+    id: 'scientificName', label: 'Nome Cientifico', sortable: true
+}, {
+    id: 'commonName', label: 'Nome Popular', sortable: true
+}, {
+    id: 'section', label: 'Secção', sortable: true
+}, {
+    id: 'd1', label: 'D1', sortable: true
+}, {
+    id: 'd2', label: 'D2', sortable: true
+}, {
+    id: 'd3', label: 'D3', sortable: true
+}, {
+    id: 'd4', label: 'D4', sortable: true
+}, {
+    id: 'meters', label: 'meters', sortable: true
+}, {
+    id: 'volumeM3', label: 'M3', sortable: true
+}, {
+    id: 'createdAt', label: 'Entrada', sortable: true
+}, {
+    id: 'archivedAt', label: 'Saida', sortable: true
+}]
 
-export const ItemsTable = ({ items, handleSelectItem, itemsSelected, clearItemsSelected }: ItemsTableProps) => {
+
+export const ItemsTable = ({ items, handleSelectItem, itemsSelected, clearItemsSelected, order, orderBy, handleSortChange }: ItemsTableProps) => {
+
 
     const SelectItem = (item: IItem) => {
         handleSelectItem(item)
@@ -26,9 +60,6 @@ export const ItemsTable = ({ items, handleSelectItem, itemsSelected, clearItemsS
         return a + b.volumeM3
     }, 0.00).toFixed(3)
 
-    const clearItemsSelect = () => {
-
-    }
     return (
         items?.length ? (
             <Box sx={{
@@ -49,7 +80,7 @@ export const ItemsTable = ({ items, handleSelectItem, itemsSelected, clearItemsS
                             <Typography>{itemsSelected.length} Selecionados</Typography>
                             <IconButton
                                 size="small"
-                                onClick={clearItemsSelect}
+                                onClick={clearItemsSelected}
                             >
                                 <DeleteOutlineIcon />
                             </IconButton>
@@ -64,19 +95,29 @@ export const ItemsTable = ({ items, handleSelectItem, itemsSelected, clearItemsS
                     <Table >
                         <TableHead sx={{ backgroundColor: '#f0f0f0', position: 'sticky', top: 0 }} >
                             <TableRow>
-                                <TableCell>#</TableCell>
-                                <TableCell>Plaqueta</TableCell>
-                                <TableCell>Nome Cientifico</TableCell>
-                                <TableCell>Nome Popular</TableCell>
-                                <TableCell>Secção</TableCell>
-                                <TableCell>D1</TableCell>
-                                <TableCell>D2</TableCell>
-                                <TableCell>D3</TableCell>
-                                <TableCell>D4</TableCell>
-                                <TableCell>Comprimento</TableCell>
-                                <TableCell>M3</TableCell>
-                                <TableCell>Entrada</TableCell>
-                                <TableCell>Saida</TableCell>
+                                {colummns.map((colum) => {
+                                    const isSortable = colum.sortable
+                                    const isSelected = orderBy === colum.id
+                                    return (
+                                        <TableCell
+                                            key={colum.id}
+                                            sortDirection={isSelected ? order : false}
+                                        >
+                                            {isSortable ?
+                                                <TableSortLabel
+                                                    active={isSelected}
+                                                    direction={isSelected ? order : 'asc'}
+                                                    onClick={() => {
+                                                        handleSortChange(colum.id)
+                                                    }}
+                                                >
+                                                    {colum.label}
+                                                </TableSortLabel>
+                                                : (colum.label)
+                                            }
+                                        </TableCell>
+                                    )
+                                })}
                             </TableRow>
                         </TableHead>
                         <TableBody >
@@ -106,7 +147,7 @@ export const ItemsTable = ({ items, handleSelectItem, itemsSelected, clearItemsS
                                         <TableCell>{row.meters}</TableCell>
                                         <TableCell>{row.volumeM3}</TableCell>
                                         <TableCellDate date={row.createdAt} />
-                                        <TableCellDate date={row.removedAt} />
+                                        <TableCellDate date={row.archivedAt} />
                                     </TableRow>
                                 )
                             })}

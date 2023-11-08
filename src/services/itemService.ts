@@ -1,9 +1,8 @@
+import { ItemQuerys } from "@/types/items/item";
 import api from "@/utils/api"
 
 
-export const ListItems = async ({ inventoryId, includeArchived = false, searchBy, from, to }: {
-    inventoryId?: string, includeArchived?: boolean, searchBy?: string, from?: string, to?: string
-}) => {
+export const ListItems = async ({ inventoryId, includeArchived = false, searchBy, from, to, order, orderBy }: ItemQuerys) => {
     try {
         const response = await api.get(`/item`, {
             params: {
@@ -11,7 +10,9 @@ export const ListItems = async ({ inventoryId, includeArchived = false, searchBy
                 includeArchived,
                 searchBy,
                 from,
-                to
+                to,
+                order,
+                orderBy
             }
         });
         return response.data;

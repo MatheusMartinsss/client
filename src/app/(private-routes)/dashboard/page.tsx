@@ -1,6 +1,6 @@
 "use client"
 import { ListItems } from "@/services/itemService";
-import { IItem } from "@/types/items/item";
+import { IItem, ItemQuerys } from "@/types/items/item";
 import { Box, Grid, IconButton, InputAdornment, MenuItem, Paper, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
 import debounce from 'lodash/debounce';
 import { useEffect, useState } from "react";
@@ -20,9 +20,12 @@ enum Forms {
     add = 'add',
     remove = 'remove'
 }
+
+type order = "asc" | 'desc'
+
 export default function Home() {
     const [items, setItems] = useState<IItem[]>([])
-    const [query, setQuery] = useState({ inventoryId: '', active: true, includeArchived: false, text: '', from: '', to: '' })
+    const [query, setQuery] = useState<ItemQuerys>({ inventoryId: '', includeArchived: false, searchBy: '', from: '', to: '', order: 'asc', orderBy: '' })
     const [inventorysList, setInventorysList] = useState<inventory[]>([])
     const [open, setOpen] = useState<boolean>(false)
     const [form, setForm] = useState<Forms | null>(null)
@@ -58,7 +61,9 @@ export default function Home() {
             includeArchived: query.includeArchived,
             from: query.from,
             to: query.to,
-            searchBy: query.text
+            searchBy: query.searchBy,
+            order: query.order,
+            orderBy: query.orderBy
         })
             .then((response) => {
                 setItems(response)
@@ -69,9 +74,9 @@ export default function Home() {
 
     const onChangeFilterText = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         if (e.target.value) {
-            setQuery((state) => ({ ...state, text: e.target.value }))
+            setQuery((state) => ({ ...state, searchBy: e.target.value }))
         } else {
-            setQuery((state) => ({ ...state, text: '' }))
+            setQuery((state) => ({ ...state, searchBy: '' }))
         }
     }
     const onSelectInventory = (event: SelectChangeEvent<string>) => {
@@ -109,7 +114,9 @@ export default function Home() {
         getInventorys()
         handleModal(null)
     }
-
+    const handleOrderQuery = (key: string) => {
+        setQuery((state) => ({ ...state, order: state.order === 'asc' ? 'desc' : 'asc', orderBy: key }))
+    }
     return (
         <Box>
             <Box
@@ -140,14 +147,6 @@ export default function Home() {
                             }}
                         ></TextField>
                     </Grid>
-                    <Grid item xs={2}>
-                        <FilterButton
-                            onClick={() => setQuery((state) => ({ ...state, active: !state.active }))}
-                            isActive={query.active}
-                        >
-                            Ativas
-                        </FilterButton>
-                    </Grid>
                     <Grid item xs={2} >
                         <FilterButton
                             onClick={() => setQuery((state) => ({ ...state, includeArchived: !state.includeArchived }))}
@@ -175,7 +174,7 @@ export default function Home() {
                     <Grid item xs={3}>
                         <Typography variant='caption' fontWeight='600'>Patio</Typography>
                         <Select
-                            value={query.inventoryId.toString()}
+                            value={query?.inventoryId?.toString()}
                             onChange={onSelectInventory}
                             fullWidth
                             id="inventory-select"
@@ -203,7 +202,10 @@ export default function Home() {
                             items={items}
                             handleSelectItem={onSelectItem}
                             itemsSelected={itemsSelected}
+                            order={query.order}
+                            orderBy={query.orderBy}
                             clearItemsSelected={clearItemsSelected}
+                            handleSortChange={handleOrderQuery}
                         />
                     </Box>
                     <Box
