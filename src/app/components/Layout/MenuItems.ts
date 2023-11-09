@@ -15,10 +15,6 @@ export const MenuItems: MenuItem[] = [{
     name: 'Inicio',
     Icon: HomeIcon
 }, {
-    path: '/items',
-    name: 'Patio',
-    Icon: InventoryIcon
-}, {
     path: '/transactions',
     name: 'Transações',
     Icon: InventoryIcon
