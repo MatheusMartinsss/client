@@ -21,8 +21,6 @@ enum Forms {
     remove = 'remove'
 }
 
-type order = "asc" | 'desc'
-
 export default function Home() {
     const [items, setItems] = useState<IItem[]>([])
     const [query, setQuery] = useState<ItemQuerys>({ inventoryId: '', includeArchived: false, searchBy: '', from: '', to: '', order: 'asc', orderBy: '' })
@@ -63,7 +61,8 @@ export default function Home() {
             to: query.to,
             searchBy: query.searchBy,
             order: query.order,
-            orderBy: query.orderBy
+            orderBy: query.orderBy,
+     
         })
             .then((response) => {
                 setItems(response)
@@ -132,9 +131,10 @@ export default function Home() {
             >
                 <Grid container spacing={2}>
                     <Grid item xs={4}>
+                        <Typography variant='caption' fontWeight='600'>Pesquisar</Typography>
                         <TextField
                             onChange={debounce(onChangeFilterText, 300)}
-                            placeholder="Pesquisar..."
+                            placeholder="Pesquisar nome, nome cientifico, plaqueta..."
                             fullWidth
                             variant="outlined"
                             size="small"
@@ -147,15 +147,16 @@ export default function Home() {
                             }}
                         ></TextField>
                     </Grid>
+                    <Grid item xs={12}>
+                    </Grid>
                     <Grid item xs={2} >
+                        <Typography variant='caption' fontWeight='600'>Removidas</Typography>
                         <FilterButton
                             onClick={() => setQuery((state) => ({ ...state, includeArchived: !state.includeArchived }))}
                             isActive={query.includeArchived}
                         >
                             Removidas
                         </FilterButton>
-                    </Grid>
-                    <Grid item xs={12}>
                     </Grid>
                     <Grid item >
                         <Typography variant='caption' fontWeight='600'>Data Inicial</Typography>
