@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
-import { FormControl, InputLabel } from '@mui/material';
+import { FormControl} from '@mui/material';
 
 interface DateInputProps {
     label?: string;
-    value: string;
+    value?: string;
     onChange: (newValue: string) => void;
 }
 

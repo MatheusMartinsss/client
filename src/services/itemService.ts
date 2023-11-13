@@ -20,3 +20,17 @@ export const ListItems = async ({ inventoryId, includeArchived = false, searchBy
         console.log('error', error)
     }
 };
+
+export const findOneItemByCode = async (code: string) => {
+    try {
+        const response = await api.get(`/item/${code}`, {
+            params: {
+                findBy: 'code'
+            }
+        })
+        return response.data
+    } catch (error) {
+        console.log('error', error)
+    }
+
+}
