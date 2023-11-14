@@ -23,7 +23,7 @@ enum Forms {
 
 export default function Home() {
     const [items, setItems] = useState<IItem[]>([])
-    const [query, setQuery] = useState<ItemQuerys>({ inventoryId: '', includeArchived: false, searchBy: '', from: '', to: '', order: 'asc', orderBy: '' })
+    const [query, setQuery] = useState<ItemQuerys>({ inventoryId: '', includeArchived: false, searchBy: '', from: null, to: null, order: 'asc', orderBy: '' })
     const [inventorysList, setInventorysList] = useState<inventory[]>([])
     const [open, setOpen] = useState<boolean>(false)
     const [form, setForm] = useState<Forms | null>(null)
@@ -62,7 +62,7 @@ export default function Home() {
             searchBy: query.searchBy,
             order: query.order,
             orderBy: query.orderBy,
-     
+
         })
             .then((response) => {
                 setItems(response)
@@ -162,6 +162,9 @@ export default function Home() {
                         <Typography variant='caption' fontWeight='600'>Data Inicial</Typography>
                         <FilterDateInput
                             value={query.from}
+                            props={{
+                                size: 'small'
+                            }}
                             onChange={(e) => setQuery((state) => ({ ...state, from: e }))}
                         />
                     </Grid>
@@ -169,6 +172,9 @@ export default function Home() {
                         <Typography variant='caption' fontWeight='600'>Data Final</Typography>
                         <FilterDateInput
                             value={query.to}
+                            props={{
+                                size: 'small'
+                            }}
                             onChange={(e) => setQuery((state) => ({ ...state, to: e }))}
                         />
                     </Grid>
