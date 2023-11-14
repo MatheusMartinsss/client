@@ -66,8 +66,6 @@ export const TransactioViewForm = ({ transaction }: TransactionViewFormProps) =>
             </Grid>
             <ItemsList
                 items={transaction.transactionItems?.map((item) => Object(item.item)) || []}
-                removeItem={(item) => console.log(item)}
-                editItem={(item) => console.log(item)}
             />
 
         </Box>

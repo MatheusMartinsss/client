@@ -4,9 +4,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from "@mui/icons-material/Edit"
 
 interface ItemsTableProps {
-    items: IItem[] | []
-    removeItem: (index: number, item: IItem) => void
-    editItem: (item: IItem) => void
+    items: IItem[] 
+    removeItem?: (index: number, item: IItem) => void
+    editItem?: (item: IItem) => void
     allowEdit?: boolean
 }
 
@@ -19,6 +19,11 @@ export const ItemsList = ({ items, removeItem, editItem, allowEdit }: ItemsTable
         if (!allowEdit) return
         if (editItem) {
             editItem(item)
+        }
+    }
+    const handleRemoveItem = (index: number, item: IItem) => {
+        if (removeItem) {
+            removeItem(index, item)
         }
     }
     return (
@@ -66,7 +71,7 @@ export const ItemsList = ({ items, removeItem, editItem, allowEdit }: ItemsTable
                                     <TableCell>{row.volumeM3}</TableCell>
                                     <TableCell>
                                         {!allowEdit &&
-                                            <IconButton onClick={() => removeItem(index, row)}>
+                                            <IconButton onClick={() => handleRemoveItem(index, row)}>
                                                 <CloseIcon />
                                             </IconButton>
                                         }
