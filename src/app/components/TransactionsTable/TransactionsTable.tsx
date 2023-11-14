@@ -8,9 +8,10 @@ import { useRouter, usePathname } from "next/navigation";
 interface TransactionsTableProps {
     transactions: ITransacation[]
     onDelete: (id: string) => void
+    onSelect: (transaction: ITransacation) => void
 }
 
-export const TransactionsTable = ({ transactions, onDelete }: TransactionsTableProps) => {
+export const TransactionsTable = ({ transactions, onDelete, onSelect }: TransactionsTableProps) => {
     const router = useRouter()
     const path = usePathname()
     const volumeTotal = transactions?.reduce((a, b) => {
@@ -18,6 +19,9 @@ export const TransactionsTable = ({ transactions, onDelete }: TransactionsTableP
     }, 0.00).toFixed(3)
     const handleDelete = (id: number) => {
         onDelete(id.toString())
+    }
+    const handleSelect = (transaction: ITransacation) => {
+        onSelect(transaction)
     }
     return (
         transactions?.length > 0 ? (
@@ -51,7 +55,7 @@ export const TransactionsTable = ({ transactions, onDelete }: TransactionsTableP
                                         <IconButton onClick={() => handleDelete(row.id)}>
                                             <DeleteOutline />
                                         </IconButton>
-                                        <IconButton onClick={() => router.push(`${path}/transaction/${row.id}`)}>
+                                        <IconButton onClick={() => handleSelect(row)}>
                                             <VisibilityIcon />
                                         </IconButton>
                                     </TableCell>

@@ -12,7 +12,6 @@ import ToastMessage from '@/app/components/Toast';
 import ItemsSearchModal from "../../ItemsSearchModal/ItemsSearchModal";
 import Search from '@mui/icons-material/Search'
 import FilterDateInput from "../../FilterDateInput/FilterDateInput";
-import { format } from "date-fns";
 import { ListItems } from "@/services/itemService";
 
 interface TransactionRemoveFormProps {
@@ -74,7 +73,7 @@ const TransactionRemoveForm = ({ items, onCancel, onSucces }: TransactionRemoveF
     const validationSchema = Yup.object({
         id: Yup.number(),
         transactionType: Yup.string().required('Campo obrigatório'),
-        archivedAt: Yup.string(),
+        archivedAt: Yup.date(),
         items: Yup.array().of(
             Yup.object().shape({
                 code: Yup.string().required(),
@@ -92,7 +91,7 @@ const TransactionRemoveForm = ({ items, onCancel, onSucces }: TransactionRemoveF
     const formik = useFormik({
         initialValues: {
             id: '',
-            archivedAt: format(new Date(), 'yyyy-MM-dd'),
+            archivedAt: new Date(),
             transactionType: "remove",
             inventory_id: '',
             items: items || [] as IItem[],
@@ -156,7 +155,7 @@ const TransactionRemoveForm = ({ items, onCancel, onSucces }: TransactionRemoveF
                 <Grid item xs display='flex' flexDirection='column'>
                     <Typography variant="caption" fontWeight='bolder'>Dt. Baixa</Typography>
                     <FilterDateInput
-                        value={formik.values.archivedAt.toString()}
+                        value={formik.values.archivedAt}
                         onChange={(value) => {
                             formik.setFieldValue('archivedAt', value)
                         }}

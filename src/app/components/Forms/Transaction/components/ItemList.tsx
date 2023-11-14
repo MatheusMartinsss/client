@@ -4,13 +4,14 @@ import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from "@mui/icons-material/Edit"
 
 interface ItemsTableProps {
-    items: IItem[]
+    items: IItem[] | []
     removeItem: (index: number, item: IItem) => void
-    editItem?: (item: IItem) => void
-    allowEdit: boolean
+    editItem: (item: IItem) => void
+    allowEdit?: boolean
 }
 
 export const ItemsList = ({ items, removeItem, editItem, allowEdit }: ItemsTableProps) => {
+
     //@ts-ignore
     const volumeTotal = items.reduce((a, b) => a + parseFloat(b.volumeM3), 0.00).toFixed(3)
 
