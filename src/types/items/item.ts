@@ -26,8 +26,8 @@ type OrderOptions = 'asc' | 'desc'
 export interface ItemQuerys {
     orderBy?: string
     order?: OrderOptions
-    to?: string;
-    from?: string;
+    to?: Date | null;
+    from?: Date | null;
     includeArchived?: boolean;
     searchBy?: string;
     inventoryId?: string;
