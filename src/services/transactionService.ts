@@ -1,11 +1,10 @@
-import { IItem } from "@/types/items/item";
-import { transactionTypes } from "@/types/transaction/transaction";
+
 import api from "@/utils/api"
 import { AxiosError } from "axios";
 
 
 
-export const ListTransactions = async ({ from, to, type }: { from?: string, to?: string, type?: string }) => {
+export const ListTransactions = async ({ from, to, type }: { from?: Date | null, to?: Date | null, type?: string }) => {
     try {
         const response = await api.get(`/transaction`, {
             params: {
