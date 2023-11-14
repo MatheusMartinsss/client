@@ -29,9 +29,7 @@ const FilterDateInput: React.FC<DateInputProps> = ({ label, value, onChange, pro
             InputLabelProps={{
                 shrink: true,
             }}
-            sx={{
-                height: 40,
-            }}
+           
 
         />
     );
