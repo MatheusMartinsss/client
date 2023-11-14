@@ -129,7 +129,7 @@ export default function Home() {
                     background: '#fff',
                 }}
             >
-                <Grid container spacing={2}>
+                <Grid container spacing={2} >
                     <Grid item xs={4}>
                         <Typography variant='caption' fontWeight='600'>Pesquisar</Typography>
                         <TextField
@@ -149,8 +149,7 @@ export default function Home() {
                     </Grid>
                     <Grid item xs={12}>
                     </Grid>
-                    <Grid item xs={2} >
-                        <Typography variant='caption' fontWeight='600'>Removidas</Typography>
+                    <Grid item xs={2} display='flex' alignItems='flex-end' >
                         <FilterButton
                             onClick={() => setQuery((state) => ({ ...state, includeArchived: !state.includeArchived }))}
                             isActive={query.includeArchived}
@@ -158,25 +157,35 @@ export default function Home() {
                             Removidas
                         </FilterButton>
                     </Grid>
-                    <Grid item >
-                        <Typography variant='caption' fontWeight='600'>Data Inicial</Typography>
-                        <FilterDateInput
-                            value={query.from}
-                            props={{
-                                size: 'small'
-                            }}
-                            onChange={(e) => setQuery((state) => ({ ...state, from: e }))}
-                        />
+                    <Grid item xs={2} container>
+                        <Grid item xs={12}>
+                            <Typography variant='caption' fontWeight='600'>Data Inicial</Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <FilterDateInput
+                                value={query.from}
+                                props={{
+                                    fullWidth: true,
+                                    size: 'small'
+                                }}
+                                onChange={(e) => setQuery((state) => ({ ...state, from: e }))}
+                            />
+                        </Grid>
                     </Grid>
-                    <Grid item>
-                        <Typography variant='caption' fontWeight='600'>Data Final</Typography>
-                        <FilterDateInput
-                            value={query.to}
-                            props={{
-                                size: 'small'
-                            }}
-                            onChange={(e) => setQuery((state) => ({ ...state, to: e }))}
-                        />
+                    <Grid item xs={2} container>
+                        <Grid item xs={12}>
+                            <Typography variant='caption' fontWeight='600'>Data Final</Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <FilterDateInput
+                                value={query.to}
+                                props={{
+                                    fullWidth: true,
+                                    size: 'small'
+                                }}
+                                onChange={(e) => setQuery((state) => ({ ...state, to: e }))}
+                            />
+                        </Grid>
                     </Grid>
                     <Grid item xs={3}>
                         <Typography variant='caption' fontWeight='600'>Patio</Typography>
