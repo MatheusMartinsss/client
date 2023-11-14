@@ -11,7 +11,18 @@ export interface ITransacation {
     createdAt: Date;
     updatedAt: Date;
     removedAt?: Date;
+    archivedAt: Date;
     user: number;
-    transactionItems?: IItem[]
+    transactionItems?: ITransactionItems[]
     volumeTotal: number
+}
+
+export interface ITransactionItems {
+    id?: number;
+    transaction_id?: number;
+    item_id?: number;
+    item?: IItem
+    removedAt?: Date;
+    createdAt: Date;
+    transaction?: ITransacation
 }
