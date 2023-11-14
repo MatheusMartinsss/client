@@ -159,6 +159,9 @@ const TransactionRemoveForm = ({ items, onCancel, onSucces }: TransactionRemoveF
                         onChange={(value) => {
                             formik.setFieldValue('archivedAt', value)
                         }}
+                        props={{
+                            size: 'small'
+                        }}
                     />
                 </Grid>
             </Grid>
