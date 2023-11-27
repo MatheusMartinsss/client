@@ -5,26 +5,26 @@ import { signIn } from 'next-auth/react'
 import { useRouter } from "next/navigation";
 import { useFormik } from 'formik';
 import ToastMessage from '@/app/components/Toast';
-import { authService } from '@/services/authService';
+
 export default function Login() {
 
     const router = useRouter()
 
     const validationSchema = Yup.object({
-        email: Yup.string().email("Digite um email valido!.").required('Campo obrigatório'),
+        cnpj: Yup.string().required('Campo obrigatório'),
         password: Yup.string().required('Campo obrigatório!.')
     })
 
     const formik = useFormik({
         initialValues: {
-            email: "",
+            cnpj: "",
             password: "",
         },
         validationSchema: validationSchema,
         onSubmit: async (values) => {
 
             const result = await signIn('credentials', {
-                email: values.email,
+                cnpj: values.cnpj,
                 password: values.password,
                 redirect: false,
 
@@ -51,14 +51,13 @@ export default function Login() {
                             Email
                         </label>
                         <input
-                            id='email'
-                            type="email"
+                            id='cnpj'
                             className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-gray-400 focus:ring-gray-300 focus:outline-none focus:ring focus:ring-opacity-40"
                             onChange={formik.handleChange}
-                            value={formik.values.email}
+                            value={formik.values.cnpj}
                         />
-                        {formik.touched.email && formik.errors.email ? (
-                            <div className="text-red-600">{formik.errors.email}</div>
+                        {formik.touched.cnpj && formik.errors.cnpj ? (
+                            <div className="text-red-600">{formik.errors.cnpj}</div>
                         ) : null}
                     </div>
                     <div className="mb-2">
