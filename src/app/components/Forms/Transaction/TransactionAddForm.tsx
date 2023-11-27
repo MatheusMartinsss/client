@@ -1,6 +1,6 @@
 "use client"
 import { transactionTypes } from "@/types/transaction/transaction"
-import { Box, Button, Grid, MenuItem, Select, Typography } from "@mui/material"
+import { Box, Button, Grid, MenuItem, Select, TextField, Typography } from "@mui/material"
 import * as Yup from 'yup'
 import { useFormik } from 'formik';
 import { useState } from "react";
@@ -31,6 +31,7 @@ const TransactionAddForm = ({ onSucces, onCancel }: TransactionAddFormProps) => 
     const validationSchema = Yup.object({
         id: Yup.number(),
         transactionType: Yup.string().required('Campo obrigatório'),
+        document: Yup.string(),
         inventory_id: Yup.string().when('transactionType', ([value], schema) => {
             return value === transactionTypes.ADD ? schema.required('Campo obrigatório') : schema.nullable()
         }),
@@ -52,7 +53,8 @@ const TransactionAddForm = ({ onSucces, onCancel }: TransactionAddFormProps) => 
         initialValues: {
             id: '',
             transactionType: "add",
-            inventory_id: '',
+            inventory_id: '1',
+            document: '',
             items: [] as IItem[],
         },
         validationSchema: validationSchema,
@@ -99,7 +101,7 @@ const TransactionAddForm = ({ onSucces, onCancel }: TransactionAddFormProps) => 
         <Box component='form' onSubmit={formik.handleSubmit} >
             <Grid container spacing={2}>
                 {formik.values.transactionType === transactionTypes.ADD &&
-                    <Grid item xs={12}>
+                    <Grid item xs={6}>
                         <Typography variant="caption" fontWeight='bolder'>Inventário*</Typography>
                         <Select
                             fullWidth
@@ -117,6 +119,22 @@ const TransactionAddForm = ({ onSucces, onCancel }: TransactionAddFormProps) => 
                         </Select>
                     </Grid>
                 }
+                <Grid item xs={6} container>
+                    <Grid item xs={12}>
+                        <Typography variant="caption" fontWeight='bolder'>DOF</Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            name='document'
+                            fullWidth
+                            value={formik.values.document}
+                            onChange={formik.handleChange}
+                            size="small"
+                        >
+
+                        </TextField>
+                    </Grid>
+                </Grid>
                 <Grid item xs={12}>
                     <ItemForm
                         handleSubmit={addItem}
