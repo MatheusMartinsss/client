@@ -2,6 +2,7 @@
 export interface IItem {
     id?: number;
     scientificName: string;
+    treeId: string;
     commonName: string;
     code: number | undefined;
     d1: number;

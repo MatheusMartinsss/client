@@ -29,6 +29,7 @@ CustomDecimalTextField.defaultProps = {
 }
 export const ItemForm = ({ handleSubmit, inventorySelected, item }: ItemFormProps) => {
     const [open, setOpen] = useState<boolean>(false)
+    const treeIdInputRef = useRef<HTMLInputElement | null>(null);
     const codeInputRef = useRef<HTMLInputElement | null>(null);
     const sectionInputRef = useRef<HTMLInputElement | null>(null);
     const d1InputRef = useRef<HTMLInputElement | null>(null);
@@ -42,6 +43,7 @@ export const ItemForm = ({ handleSubmit, inventorySelected, item }: ItemFormProp
     const validationSchema = Yup.object({
         id: Yup.string().nullable(),
         inventory_id: Yup.string(),
+        treeId: Yup.string(),
         product_id: Yup.number(),
         code: Yup.string().required(),
         section: Yup.string(),
@@ -57,6 +59,7 @@ export const ItemForm = ({ handleSubmit, inventorySelected, item }: ItemFormProp
     const ProductForm = useFormik({
         initialValues: {
             id: null,
+            treeId: '',
             inventory_id: inventorySelected,
             code: '',
             scientificName: '',
@@ -86,6 +89,7 @@ export const ItemForm = ({ handleSubmit, inventorySelected, item }: ItemFormProp
     }
     const resetProduct = () => {
         ProductForm.setFieldValue('id', null)
+        ProductForm.setFieldValue('treeId', '')
         ProductForm.setFieldValue('code', '')
         ProductForm.setFieldValue('commonName', '')
         ProductForm.setFieldValue('scientificName', '')
@@ -120,6 +124,7 @@ export const ItemForm = ({ handleSubmit, inventorySelected, item }: ItemFormProp
     useEffect(() => {
         if (item) {
             ProductForm.setFieldValue('id', item.id)
+            ProductForm.setFieldValue('treeId', item.treeId)
             ProductForm.setFieldValue('code', item.code)
             ProductForm.setFieldValue('commonName', item.commonName)
             ProductForm.setFieldValue('scientificName', item.scientificName)
@@ -157,6 +162,30 @@ export const ItemForm = ({ handleSubmit, inventorySelected, item }: ItemFormProp
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter') {
                                                 handleModal()
+                                            }
+                                        }}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid item xs={1}>
+                            <Grid container direction="column">
+                                <Grid item>
+                                    <Typography variant="caption">N. Arvore</Typography>
+                                </Grid>
+                                <Grid item>
+                                    <CustomTextField
+                                        name='treeId'
+                                        inputRef={treeIdInputRef}
+                                        value={ProductForm.values.treeId}
+                                        onChange={ProductForm.handleChange}
+
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                e.preventDefault();
+                                                if (codeInputRef.current) {
+                                                    codeInputRef.current.focus();
+                                                }
                                             }
                                         }}
                                     />
