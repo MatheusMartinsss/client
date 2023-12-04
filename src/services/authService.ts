@@ -1,3 +1,4 @@
+import { IOrganization } from "@/types/organization/organization";
 import api from "@/utils/api"
 import { Unauthorized } from "@/utils/errors"
 import { AxiosError } from "axios"
@@ -8,7 +9,6 @@ export const authService = async (cnpj: string, password: string) => {
         return response.data;
     } catch (error) {
         const err = error as AxiosError;
-        console.log(err.response)
         if (err.response && err.response.status === 401) {
             throw new Unauthorized('Acesso negado!');
         } else {
@@ -17,3 +17,18 @@ export const authService = async (cnpj: string, password: string) => {
         }
     }
 };
+
+export const singUpService = async (body: IOrganization) => {
+    try {
+        const response = await api.post('/signup', body)
+        return response.data
+    } catch (error) {
+        const err = error as AxiosError;
+        if (err.response && err.response.status === 401) {
+            throw new Unauthorized('Acesso negado!');
+        } else {
+            throw error;
+        }
+
+    }
+}

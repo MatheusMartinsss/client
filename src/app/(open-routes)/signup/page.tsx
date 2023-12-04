@@ -5,21 +5,18 @@ import { Box, Button, Grid, TextField, Typography } from "@mui/material"
 import { useFormik } from 'formik';
 import ToastMessage from '@/app/components/Toast';
 import { useRouter } from 'next/navigation';
+import SearchIcon from '@mui/icons-material/Search'
 import { styled } from "@mui/material/styles"
 import { InputMask, type InputMaskProps } from '@react-input/mask';
-
-
+import { fiscalFindCnpj } from '@/services/fiscalService';
 
 const CustomLabel = styled(Typography)({
-
-})
-CustomLabel.defaultProps = {
-    variant: 'caption',
     fontWeight: 'bolder'
-}
+})
+
 
 const CnpjInputMask = forwardRef<HTMLInputElement, InputMaskProps>((props, forwardedRef) => {
-    return <InputMask ref={forwardedRef} mask="__.___.___/____-__" replacement="_" {...props} />;
+    return <InputMask ref={forwardedRef} mask="##.###.###/####-##" replacement="#"  {...props} />;
 });
 
 const SignUp = () => {
@@ -30,7 +27,9 @@ const SignUp = () => {
         email: Yup.string().required('Campo obrigatório'),
         name: Yup.string().required('Campo obrigatório!.'),
         password: Yup.string().required('Campo obrigatório!.'),
-        confirmPassword: Yup.string().required('Campo obrigatório!.'),
+        confirmPassword: Yup
+            .string()
+            .oneOf([Yup.ref('password')], 'Precisa ser igual a senha!.'),
         address: Yup.object().shape({
             street: Yup.string().required('Campo obrigatório'),
             number: Yup.string(),
@@ -59,19 +58,35 @@ const SignUp = () => {
         }
     })
 
+    const handleCnpjSearch = async (cnpj: string) => {
+        const result = await fiscalFindCnpj(cnpj)
+        if (result) {
+            formik.setFieldValue('cnpj', result.cnpj)
+            formik.setFieldValue('name', result.razao_social)
+            formik.setFieldValue('email', result.email)
+            formik.setFieldValue('address.neighbordhood', result.endereco.bairro)
+            formik.setFieldValue('address.street', result.endereco.logradouro)
+            formik.setFieldValue('address.postalCode', result.endereco.cep)
+            formik.setFieldValue('address.number', result.endereco.numero)
+        }
+    }
+
     return (
         <Box display='flex' justifyContent='center' height='100vh'>
             <Grid container width='500px' height='300px' spacing={2} component='form' onSubmit={formik.handleSubmit}>
                 <Grid item xs={12} >
                     <Grid container direction='column'>
                         <Grid item xs>
-                            <CustomLabel>
+                            <CustomLabel variant='caption'>
                                 CNPJ
                             </CustomLabel>
                         </Grid>
                         <Grid item xs>
                             <TextField
                                 InputProps={{
+                                    endAdornment: (
+                                        <SearchIcon style={{ cursor: 'pointer' }} onClick={() => handleCnpjSearch(formik.values.cnpj)} />
+                                    ),
                                     inputComponent: CnpjInputMask
                                 }}
                                 fullWidth
@@ -109,6 +124,7 @@ const SignUp = () => {
                         <Grid item xs>
                             <TextField
                                 fullWidth
+                                type='email'
                                 name='email'
                                 onChange={formik.handleChange}
                                 value={formik.values.email}
@@ -224,7 +240,6 @@ const SignUp = () => {
                     <Button fullWidth variant='contained' type='submit'>Cadastrar</Button>
                 </Grid>
             </Grid>
-
         </Box>
     )
 }
