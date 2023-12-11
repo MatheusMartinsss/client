@@ -11,20 +11,20 @@ export default function Login() {
     const router = useRouter()
 
     const validationSchema = Yup.object({
-        cnpj: Yup.string().required('Campo obrigatório'),
+        name: Yup.string().required('Campo obrigatório'),
         password: Yup.string().required('Campo obrigatório!.')
     })
 
     const formik = useFormik({
         initialValues: {
-            cnpj: "",
+            name: "",
             password: "",
         },
         validationSchema: validationSchema,
         onSubmit: async (values) => {
 
             const result = await signIn('credentials', {
-                cnpj: values.cnpj,
+                name: values.name,
                 password: values.password,
                 redirect: false,
 
@@ -48,16 +48,16 @@ export default function Login() {
                             htmlFor="email"
                             className="block text-sm font-semibold text-gray-800"
                         >
-                            Email
+                            Nome
                         </label>
                         <input
-                            id='cnpj'
+                            id='name'
                             className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-gray-400 focus:ring-gray-300 focus:outline-none focus:ring focus:ring-opacity-40"
                             onChange={formik.handleChange}
-                            value={formik.values.cnpj}
+                            value={formik.values.name}
                         />
-                        {formik.touched.cnpj && formik.errors.cnpj ? (
-                            <div className="text-red-600">{formik.errors.cnpj}</div>
+                        {formik.touched.name && formik.errors.name ? (
+                            <div className="text-red-600">{formik.errors.name}</div>
                         ) : null}
                     </div>
                     <div className="mb-2">

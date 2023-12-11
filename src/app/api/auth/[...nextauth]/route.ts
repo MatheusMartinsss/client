@@ -20,6 +20,7 @@ export const authOptions: AuthOptions = {
                 id: { label: "id", type: "number" },
                 email: { label: "Email", type: "text" },
                 cnpj: {label: 'cnpj', type: 'text'},
+                name: {label: 'name', type: 'text'},
                 password: { label: "Password", type: "password" },
                 role: { label: "Role", type: "text" },
                 token: { label: "Token", type: "text" },
@@ -27,10 +28,10 @@ export const authOptions: AuthOptions = {
             },
             async authorize(credentials, req) {
 
-                if (!credentials?.cnpj || !credentials.password)
+                if (!credentials?.name || !credentials.password)
                     return null
 
-                const response = await authService(credentials?.cnpj, credentials?.password)
+                const response = await authService(credentials?.name, credentials?.password)
                 if (response) {
                     return {
                         id: response.id,
