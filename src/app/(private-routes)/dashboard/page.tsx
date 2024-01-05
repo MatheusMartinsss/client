@@ -15,19 +15,23 @@ import CarpenterRoundedIcon from '@mui/icons-material/CarpenterRounded';
 import Modal from "@/app/components/Modal/Modal";
 import TransactionAddForm from "@/app/components/Forms/Transaction/TransactionAddForm";
 import TransactionRemoveForm from "@/app/components/Forms/Transaction/TransactionRemoveForm";
+import { Reports } from "@/app/components/Forms/Reports/Reports";
 
 enum Forms {
-    add = 'add',
-    remove = 'remove'
+    add = 'Entrada',
+    remove = 'Saida',
+    reports = 'Relatorios'
 }
 
 export default function Home() {
+
     const [items, setItems] = useState<IItem[]>([])
     const [query, setQuery] = useState<ItemQuerys>({ inventoryId: '', includeArchived: false, searchBy: '', from: null, to: null, order: 'asc', orderBy: '' })
     const [inventorysList, setInventorysList] = useState<inventory[]>([])
     const [open, setOpen] = useState<boolean>(false)
     const [form, setForm] = useState<Forms | null>(null)
     const [itemsSelected, setItemsSelected] = useState<IItem[]>([])
+
     useEffect(() => {
         getInventorys()
     }, [])
@@ -263,13 +267,28 @@ export default function Home() {
                         >
                             <CarpenterRoundedIcon sx={{ width: '100%', height: '100%' }} />
                         </IconButton>
-
+                        <IconButton
+                            name="add"
+                            size="large"
+                            onClick={() => handleModal(Forms.reports)}
+                            sx={{
+                                width: '50px',
+                                height: '50px',
+                                backgroundColor: '#f5f5f5',
+                                borderRadius: '50%',
+                                margin: '0 0 20px 0',
+                                boxShadow: itemsSelected.length > 0 ? '0 0 10px rgba(255, 0, 0, 0.5)' : 'none',
+                            }}
+                        >
+                            <CarpenterRoundedIcon sx={{ width: '100%', height: '100%' }} />
+                        </IconButton>
                     </Box>
                 </Box>
             </Box>
             <Modal
                 open={open}
                 handleModal={handleModal}
+                title={form?.toString()}
             >
                 {form === Forms.add &&
                     <TransactionAddForm
@@ -282,6 +301,11 @@ export default function Home() {
                         items={itemsSelected}
                         onSucces={onRemoveItemsSuccess}
                         onCancel={() => handleModal(null)}
+                    />
+                }
+                {form === Forms.reports &&
+                    <Reports
+
                     />
                 }
             </Modal>

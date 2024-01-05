@@ -1,5 +1,6 @@
 import { ItemQuerys } from "@/types/items/item";
 import api from "@/utils/api"
+import saveAs from "file-saver";
 
 
 export const ListItems = async ({ inventoryId, includeArchived = false, searchBy, from, to, order, orderBy }: ItemQuerys) => {
@@ -32,5 +33,30 @@ export const findOneItemByCode = async (code: string) => {
     } catch (error) {
         console.log('error', error)
     }
-
 }
+
+export const getItemsReport = async ({ includeArchived, from, to, inventorysIds, productsIds }: {
+    includeArchived?: boolean,
+    from?: Date | null,
+    to?: Date | null,
+    inventorysIds?: string,
+    productsIds?: string
+}): Promise<void> => {
+    try {
+        const response = await api.get('/item/reports/items', {
+            responseType: 'blob',
+            params: {
+                includeArchived: includeArchived,
+                from,
+                to,
+                inventorysIds,
+                productsIds
+            }
+
+        });
+        const blob = new Blob([response.data], { type: 'application/pdf' });
+        saveAs(blob, 'relatorio.pdf');
+    } catch (error) {
+        console.error('Erro ao baixar o arquivo', error);
+    }
+};
