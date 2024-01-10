@@ -8,18 +8,6 @@ import { ListInventorys } from "@/services/inventoryService";
 import { ListProducts } from "@/services/productsService";
 import { IProduct } from "@/types/product/product";
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-    PaperProps: {
-        style: {
-            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-            width: 250,
-        },
-    },
-};
-
-
 export const Reports = () => {
     const [inventoryList, setInventoryList] = useState<inventory[]>([])
     const [from, setFrom] = useState<Date | null>(null)
