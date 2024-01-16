@@ -1,9 +1,9 @@
 import { IProduct } from "../product/product";
 
 export interface ITree {
-    id?: number;
+    id?: number ;
     range: number;
-    code: number;
+    code: string;
     scientificName: string;
     commonName: string;
     dap: number;
@@ -12,8 +12,8 @@ export interface ITree {
     product?: IProduct
     createdAt?: Date;
     updatedAt?: Date;
-    product_id: number
-    autex_id: number;
+    product_id: number | null
+    autex_id?: number | null
 }
 
 export interface IQueryTree {

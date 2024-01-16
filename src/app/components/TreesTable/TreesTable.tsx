@@ -6,9 +6,9 @@ interface TreesTableProps {
     data: ITree[]
     order?: "asc" | "desc"
     orderBy?: string
-    page: number
-    count: number
-    rowsPerPage: number
+    page?: number
+    count?: number
+    rowsPerPage?: number
     onRequestPageChange: (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => void
     onRequestLimitChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
 }
@@ -26,7 +26,7 @@ const colummns = [{
 
 
 
-export const TreesTable = ({ data, order, orderBy, onRequestPageChange, onRequestLimitChange, page, count, rowsPerPage }: TreesTableProps) => {
+export const TreesTable = ({ data, order, orderBy, onRequestPageChange, onRequestLimitChange, page = 0, count = 0, rowsPerPage = 10 }: TreesTableProps) => {
     return (
         data?.length ? (
             <Box sx={{
@@ -94,8 +94,6 @@ export const TreesTable = ({ data, order, orderBy, onRequestPageChange, onReques
                     rowsPerPage={rowsPerPage}
                     onPageChange={onRequestPageChange}
                     onRowsPerPageChange={onRequestLimitChange}
-                
-
                 />
             </Box>
         ) : (

@@ -1,9 +1,6 @@
 "use client"
-import { Box, Button, Checkbox, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
-import TableCellDate from "../../TableCellDate/TableCellDate"
-import { IItem } from "@/types/items/item"
+import { Box,  Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
 import { useEffect, useRef, useState } from "react";
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { IProduct } from "@/types/product/product";
 
 interface ProductsTableProps {

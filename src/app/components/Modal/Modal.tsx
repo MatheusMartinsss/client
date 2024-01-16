@@ -1,17 +1,15 @@
 "use client"
-import { Dialog, DialogContent, DialogProps, DialogTitle, Grow, IconButton, Typography } from "@mui/material"
+import { Dialog, DialogContent, DialogProps, DialogTitle, Grow, IconButton, Paper, Typography } from "@mui/material"
 import CloseIcon from "@mui/icons-material/Close"
 import React, { ReactNode } from 'react'
-interface ModalProps {
+interface ModalProps extends DialogProps {
     open: boolean
-    title?: string | ReactNode
+    title?: string
     handleModal: () => void
     children: ReactNode
 }
 
 const Modal = ({ open, handleModal, title, children, ...rest }: ModalProps) => {
-
-
     return (
         <Dialog
             open={open}

@@ -6,10 +6,11 @@ import ToastMessage from "../../Toast";
 import { IProduct } from "@/types/product/product";
 
 interface ProductCreateFormProps {
-    onCreate: (product: IProduct) => void
+    onCreate?: (product: IProduct) => void
+    previousProduct?: Partial<IProduct>
 }
 
-const ProductCreateForm = ({ onCreate }: ProductCreateFormProps) => {
+const ProductCreateForm = ({ onCreate, previousProduct }: ProductCreateFormProps) => {
     const validationSchema = Yup.object({
         id: Yup.number(),
         commonName: Yup.string().required("Campo obrigatório").max(32),
@@ -20,15 +21,17 @@ const ProductCreateForm = ({ onCreate }: ProductCreateFormProps) => {
     const formik = useFormik({
         initialValues: {
             id: undefined,
-            commonName: "",
-            scientificName: "",
+            commonName: "" || previousProduct?.commonName,
+            scientificName: "" || previousProduct?.scientificName,
             description: "",
         },
         validationSchema: validationSchema,
         onSubmit: async (values, helper) => {
             await createProduct(values).then((response) => {
                 ToastMessage({ type: 'success', message: 'Produto criado com sucesso!.' })
-                onCreate(response)
+                if (onCreate) {
+                    onCreate(response)
+                }
                 formik.resetForm()
             }).catch((error) => {
                 ToastMessage({ type: 'error', message: 'Não foi possivel criar o produto!.' })
