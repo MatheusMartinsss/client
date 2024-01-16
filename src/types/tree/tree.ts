@@ -20,6 +20,8 @@ export interface IQueryTree {
     autexIds?: string
     page?: number
     limit?: number;
+    order?: 'asc' | 'desc';
+    orderBy?: string
     count?: number;
     productsIds?: string
     includeItems?: boolean

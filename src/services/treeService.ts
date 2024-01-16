@@ -1,13 +1,15 @@
 import { IQueryTree, ITree } from "@/types/tree/tree"
 import api from "@/utils/api"
 
-export const ListTreesService = async ({ autexIds, limit, page }: IQueryTree) => {
+export const ListTreesService = async ({ autexIds, limit, page, order, orderBy }: IQueryTree) => {
     try {
         const response = await api.get('/tree', {
             params: {
                 autexIds,
                 limit,
-                page
+                page,
+                order,
+                orderBy
             }
         })
         return response.data

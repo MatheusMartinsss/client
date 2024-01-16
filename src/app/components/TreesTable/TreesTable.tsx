@@ -11,6 +11,7 @@ interface TreesTableProps {
     rowsPerPage?: number
     onRequestPageChange: (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => void
     onRequestLimitChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+    handleSortChange: (key: string) => void
 }
 const colummns = [{
     id: 'code', label: 'Arvore', sortable: true
@@ -24,9 +25,17 @@ const colummns = [{
     id: 'volumeM3', label: 'M3', sortable: true
 }]
 
-
-
-export const TreesTable = ({ data, order, orderBy, onRequestPageChange, onRequestLimitChange, page = 0, count = 0, rowsPerPage = 10 }: TreesTableProps) => {
+export const TreesTable = ({
+    data,
+    order,
+    orderBy,
+    onRequestPageChange,
+    onRequestLimitChange,
+    page = 0,
+    count = 0,
+    rowsPerPage = 10,
+    handleSortChange
+}: TreesTableProps) => {
     return (
         data?.length ? (
             <Box sx={{
@@ -54,9 +63,9 @@ export const TreesTable = ({ data, order, orderBy, onRequestPageChange, onReques
                                                 <TableSortLabel
                                                     active={isSelected}
                                                     direction={isSelected ? order : 'asc'}
-                                                //  onClick={() => {
-                                                //     handleSortChange(colum.id)
-                                                //</TableCell>  }}
+                                                    onClick={() => {
+                                                        handleSortChange(colum.id)
+                                                    }}
                                                 >
                                                     {colum.label}
                                                 </TableSortLabel>

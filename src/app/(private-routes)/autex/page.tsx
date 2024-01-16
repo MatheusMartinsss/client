@@ -20,7 +20,7 @@ const Autex = () => {
     const [selectedAutex, setSelectedAutex] = useState<string>('')
     const [autexList, setAutexList] = useState<IAutex[]>([])
     const [trees, setTrees] = useState<ITree[]>([])
-    const [query, setQuery] = useState<IQueryTree>({ autexIds: '', limit: 10, page: 0, count: 1 })
+    const [query, setQuery] = useState<IQueryTree>({ autexIds: '', limit: 10, page: 0, count: 1, order: 'asc', orderBy: '' })
     const [open, setOpen] = useState<boolean>(false)
     const [form, setForm] = useState<Forms>()
     useEffect(() => {
@@ -28,7 +28,7 @@ const Autex = () => {
     }, [])
     useEffect(() => {
         selectedAutex && getAutexTrees(selectedAutex)
-    }, [selectedAutex, query.page, query.limit])
+    }, [selectedAutex, query.order, query.orderBy, query.page, query.limit])
     const getAutexList = async () => {
         const data = await ListAutexService()
         setAutexList(data)
@@ -40,7 +40,7 @@ const Autex = () => {
         return autexList.find((autex) => autex.id === parseInt(id)) ?? undefined;
     };
     const getAutexTrees = async (autexId: string) => {
-        const { data, total } = await ListTreesService({ autexIds: autexId, page: query.page, limit: query.limit })
+        const { data, total } = await ListTreesService({ autexIds: autexId, page: query.page, limit: query.limit, order: query.order, orderBy: query.orderBy })
         setTrees(data)
         setQuery((state) => ({ ...state, count: total }))
     }
@@ -56,6 +56,9 @@ const Autex = () => {
     }
     const handleClose = () => {
         setOpen(false)
+    }
+    const handleSortChange = (key: string) => {
+        setQuery((state) => ({ ...state, order: state.order === 'asc' ? 'desc' : 'asc', orderBy: key }))
     }
     return (
         <Box>
@@ -116,7 +119,10 @@ const Autex = () => {
                         onRequestPageChange={onRequestPageChange}
                         rowsPerPage={query?.limit}
                         page={query.page}
+                        orderBy={query.orderBy}
+                        order={query.order}
                         count={query.count}
+                        handleSortChange={handleSortChange}
                         onRequestLimitChange={onChangeLimitPerPage}
                     />
                 }
