@@ -1,7 +1,7 @@
 import { IQueryTree, ITree } from "@/types/tree/tree"
 import api from "@/utils/api"
 
-export const ListTreesService = async ({ autexIds, limit, page, order, orderBy }: IQueryTree) => {
+export const ListTreesService = async ({ autexIds, limit, page, order, orderBy, searchBy }: IQueryTree) => {
     try {
         const response = await api.get('/tree', {
             params: {
@@ -9,7 +9,8 @@ export const ListTreesService = async ({ autexIds, limit, page, order, orderBy }
                 limit,
                 page,
                 order,
-                orderBy
+                orderBy,
+                searchBy
             }
         })
         return response.data
@@ -25,5 +26,14 @@ export const CreateTreeService = async (data: ITree[]) => {
     } catch (error) {
         throw error
 
+    }
+}
+
+export const UpdateTreeService = async ({ id, data }: { id?: number, data: ITree }) => {
+    try {
+        const response = await api.patch(`/tree/${id}`, data)
+        return response.data
+    } catch (error) {
+        throw error
     }
 }

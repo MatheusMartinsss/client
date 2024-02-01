@@ -1,9 +1,16 @@
 import { Box, Checkbox, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, TableSortLabel, TableFooter, TablePagination } from "@mui/material"
-import React from "react";
+import React, { useState } from "react";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { ITree } from "@/types/tree/tree";
+import Modal from "../Modal/Modal";
+import { TreeEditForm } from "../Forms/Trees/TreeEditForm";
+import { UpdateTreeService } from "@/services/treeService";
+import ToastMessage from "../Toast";
 
 interface TreesTableProps {
     data: ITree[]
+    treesSelected?: ITree[]
     order?: "asc" | "desc"
     orderBy?: string
     page?: number
@@ -12,8 +19,13 @@ interface TreesTableProps {
     onRequestPageChange: (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => void
     onRequestLimitChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
     handleSortChange: (key: string) => void
+    onSelect?: (tree: ITree) => void
+    clearSelected?: () => void
+    onUpdated?: (tree: ITree) => void
 }
 const colummns = [{
+    id: '#', label: '#', sortable: false
+}, {
     id: 'code', label: 'Arvore', sortable: true
 }, {
     id: 'scientificName', label: 'Nome Cientifico', sortable: true
@@ -23,6 +35,8 @@ const colummns = [{
     id: 'meters', label: 'meters', sortable: true
 }, {
     id: 'volumeM3', label: 'M3', sortable: true
+}, {
+    id: 'options', label: 'Opções', sortable: false
 }]
 
 export const TreesTable = ({
@@ -34,8 +48,37 @@ export const TreesTable = ({
     page = 0,
     count = 0,
     rowsPerPage = 10,
-    handleSortChange
+    handleSortChange,
+    treesSelected,
+    onSelect,
+    clearSelected,
+    onUpdated
 }: TreesTableProps) => {
+    const [open, setOpen] = useState<boolean>(false)
+    const [treeSelected, setTreeSelected] = useState<ITree>()
+    const handleOpen = () => {
+        setOpen((state) => !state)
+    }
+
+    const onRequestEdit = (tree: ITree) => {
+        setTreeSelected(tree)
+        handleOpen()
+    }
+    const handleEdited = async (tree: ITree) => {
+        try {
+            const result = await UpdateTreeService({ id: tree.id, data: tree })
+            ToastMessage({ type: 'success', message: 'Arvore atualizada com sucesso!.' })
+            handleOpen()
+            onUpdated && onUpdated(result)
+        } catch (error) {
+            ToastMessage({ type: 'error', message: 'Não foi possivel atualizar, tente novamente mais tarde...' })
+        }
+
+    }
+    const isSelected = (id: number | undefined) => {
+        return treesSelected?.some((selectedItem) => selectedItem.id === id);
+    };
+
     return (
         data?.length ? (
             <Box sx={{
@@ -44,10 +87,29 @@ export const TreesTable = ({
                 width: '100%'
             }} >
                 <TableContainer sx={{
-                    marginTop: 2,
                     overflowY: 'auto',
-                    height: 450,
+                    height: 500,
                 }}>
+                    {treesSelected && treesSelected.length > 0 &&
+                        <Box
+                            mt={2}
+                            padding={2}
+                            display='flex'
+                            justifyContent='space-between'
+                            alignItems='center'
+                            sx={{ backgroundColor: '#f0f0f0' }}
+                        >
+                            <>
+                                <Typography>{treesSelected.length} Selecionados</Typography>
+                                <IconButton
+                                    size="small"
+                                    onClick={() => clearSelected && clearSelected()}
+                                >
+                                    <DeleteOutlineIcon />
+                                </IconButton>
+                            </>
+                        </Box>
+                    }
                     <Table >
                         <TableHead sx={{ backgroundColor: '#f0f0f0', position: 'sticky', top: 0 }} >
                             <TableRow>
@@ -78,22 +140,34 @@ export const TreesTable = ({
                         </TableHead>
                         <TableBody >
                             {data.map((row) => {
+                                const treeIsSelected = isSelected(row.id)
                                 return (
                                     <TableRow
                                         key={row.id}
                                         role="checkbox"
                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                        selected={treeIsSelected}
                                     >
+                                        <TableCell padding="checkbox">
+                                            <Checkbox
+                                                onClick={() => onSelect && onSelect(row)}
+                                                checked={treeIsSelected}
+                                            />
+                                        </TableCell>
                                         <TableCell component="th" scope="row">{row.code}</TableCell>
                                         <TableCell>{row.scientificName}</TableCell>
                                         <TableCell>{row.commonName}</TableCell>
                                         <TableCell>{row.meters}</TableCell>
                                         <TableCell>{row.volumeM3}</TableCell>
+                                        <TableCell>
+                                            <IconButton onClick={() => onRequestEdit(row)}>
+                                                <EditIcon />
+                                            </IconButton>
+                                        </TableCell>
                                     </TableRow>
                                 )
                             })}
                         </TableBody>
-
                     </Table>
                 </TableContainer>
                 <TablePagination
@@ -104,6 +178,18 @@ export const TreesTable = ({
                     onPageChange={onRequestPageChange}
                     onRowsPerPageChange={onRequestLimitChange}
                 />
+                <Modal
+                    open={open}
+                    handleModal={handleOpen}
+                    title="Editar Arvore"
+                >
+                    {treeSelected &&
+                        <TreeEditForm
+                            tree={treeSelected}
+                            handleSubmit={handleEdited}
+                        />
+                    }
+                </Modal>
             </Box>
         ) : (
             <Box

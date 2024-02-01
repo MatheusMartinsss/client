@@ -12,7 +12,7 @@ const Template = ({ children }: TemplateProps) => {
             <Sidebar />
             <Box display='flex' flexDirection='column' width='100%'>
                 <Header />
-                <Box component='main'sx={{ p: 5 }} >
+                <Box component='main' sx={{ p: 4, display: 'flex', flexDirection: 'column', height: '90vh' }} >
                     {children}
                 </Box>
             </Box>

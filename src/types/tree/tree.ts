@@ -23,6 +23,7 @@ export interface IQueryTree {
     order?: 'asc' | 'desc';
     orderBy?: string
     count?: number;
+    searchBy?: string;
     productsIds?: string
     includeItems?: boolean
 }
