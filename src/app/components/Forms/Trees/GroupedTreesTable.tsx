@@ -119,8 +119,8 @@ export const GroupedTreesTable = ({ data, order, orderBy, handleSubmit }: TreesT
                                     role="checkbox"
                                     sx={{
                                         '&:last-child td, &:last-child th': { border: 0 },
-                                        backgroundColor: isInvalid ? '#FFCDD2' : 'inherit', // Cor de fundo para destacar a linha inválida
-                                        boxShadow: isInvalid ? '0px 0px 5px 1px red' : 'none', // Sombra com borda vermelha se estiver inválida
+                                        backgroundColor: isInvalid ? '#FFCDD2' : 'inherit', 
+                                        boxShadow: isInvalid ? '0px 0px 5px 1px red' : 'none', 
                                     }}
                                 >
                                     <TableCell>{row?.scientificName}</TableCell>

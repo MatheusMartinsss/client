@@ -1,8 +1,9 @@
-import { IItem } from "../items/item";
+import { ICreateItem, IItem } from "../items/item";
 
 export enum transactionTypes {
     ADD = 'add',
-    REMOVE = 'remove'
+    REMOVE = 'remove',
+    FELL = 'fell'
 }
 
 export interface ITransacation {
@@ -25,4 +26,12 @@ export interface ITransactionItems {
     removedAt?: Date;
     createdAt: Date;
     transaction?: ITransacation
+}
+
+export interface ICreateTransaction {
+    items: ICreateItem[]
+    document?: string
+    archivedAt?: Date;
+    type: transactionTypes
+    inventory_id: number;
 }

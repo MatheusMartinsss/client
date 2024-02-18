@@ -1,4 +1,4 @@
-import { IQueryTree, ITree } from "@/types/tree/tree"
+import { ICreateTree, IQueryTree, ITree } from "@/types/tree/tree"
 import api from "@/utils/api"
 
 export const ListTreesService = async ({ autexIds, limit, page, order, orderBy, searchBy }: IQueryTree) => {
@@ -19,7 +19,7 @@ export const ListTreesService = async ({ autexIds, limit, page, order, orderBy, 
     }
 }
 
-export const CreateTreeService = async (data: ITree[]) => {
+export const CreateTreeService = async (data: ICreateTree[]) => {
     try {
         const response = await api.post('/tree', data)
         return response.data

@@ -23,6 +23,22 @@ export interface IItem {
     removedAt: Date;
 }
 
+export interface ICreateItem {
+    scientificName: string;
+    commonName: string;
+    code: string;
+    d1: string;
+    d2: string;
+    d3: string;
+    d4: string;
+    meters: string;
+    volumeM3: string;
+    section: string;
+    inventory_id: number;
+    product_id: number;
+    tree_id: number| null;
+}
+
 type OrderOptions = 'asc' | 'desc'
 export interface ItemQuerys {
     orderBy?: string

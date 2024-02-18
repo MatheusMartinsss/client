@@ -4,7 +4,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import ImportIcon from '@mui/icons-material/ImportExport';
 import DownloadIcon from '@mui/icons-material/Download';
 import * as exceljs from 'exceljs'
-import { ITree } from '@/types/tree/tree';
+import { ICreateTree } from '@/types/tree/tree';
 import { GroupedTreesTable } from './GroupedTreesTable';
 import { IAutex } from '@/types/autex/autex';
 import { CreateTreeService } from '@/services/treeService';
@@ -19,13 +19,13 @@ export type AggregatedDataItem = {
 };
 
 interface TreeImportFormProps {
-    autex?: IAutex
+    autex: IAutex
 }
 
 export const TreeImportForm = ({ autex }: TreeImportFormProps) => {
     const [file, setFile] = useState<File | null>(null);
     const [fileName, setFileName] = useState<string>('');
-    const [trees, setTrees] = useState<ITree[]>([]);
+    const [trees, setTrees] = useState<ICreateTree[]>([]);
     const [groups, setGroups] = useState<AggregatedDataItem[]>([])
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
@@ -46,10 +46,11 @@ export const TreeImportForm = ({ autex }: TreeImportFormProps) => {
                     const worksheet = workbook.worksheets[0];
                     const headerRow = worksheet.getRow(1).values;
 
-                    const rows: ITree[] = [];
+                    const rows: ICreateTree[] = [];
                     worksheet.eachRow((row, rowNumber) => {
                         if (rowNumber > 1) {
-                            const rowData: ITree = {
+                            const rowData: ICreateTree = {
+                                id: null,
                                 range: 0,
                                 code: '',
                                 scientificName: '',
@@ -58,7 +59,7 @@ export const TreeImportForm = ({ autex }: TreeImportFormProps) => {
                                 meters: 0,
                                 volumeM3: 0,
                                 product_id: null,
-                                autex_id: autex?.id
+                                autex_id: autex.id
                             };
                             row.eachCell((cell, colNumber) => {
                                 //@ts-ignore
@@ -131,7 +132,7 @@ export const TreeImportForm = ({ autex }: TreeImportFormProps) => {
                 return {
                     ...tree,
                     product_id: matchingItem.product_id,
-                    autex_id: autex?.id
+                    autex_id: autex.id
                 };
             }
             return tree;

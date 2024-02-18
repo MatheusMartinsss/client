@@ -1,5 +1,5 @@
 'use client'
-import { Box, Grid, MenuItem, Paper, Select, Typography, Divider, SelectChangeEvent, Button, TextField, InputAdornment } from "@mui/material"
+import { Box, Grid, MenuItem, Paper, Select, Typography, SelectChangeEvent, Button, TextField, InputAdornment } from "@mui/material"
 import { useEffect, useState } from "react";
 import { ListAutexService } from "@/services/autexService";
 import { IAutex } from "@/types/autex/autex";
@@ -7,11 +7,10 @@ import { IQueryTree, ITree } from "@/types/tree/tree";
 import { ListTreesService } from "@/services/treeService";
 import TreesTable from "@/app/components/TreesTable/TreesTable";
 import Modal from "@/app/components/Modal/Modal";
-import { TreeForm } from "@/app/components/Forms/Trees/TreeForm";
 import { CreateTrees } from "@/app/components/Forms/Trees/CreateTrees";
 import { TreeImportForm } from "@/app/components/Forms/Trees/TreeImportForm";
 import SearchIcon from '@mui/icons-material/Search';
-import { FellTrees } from "@/app/components/Forms/Trees/FellTrees";
+import { FellTreesTable } from "@/app/components/Forms/Trees/FellTree/FellTreesTable";
 enum Forms {
     createForm = "addForm",
     importForm = 'importForm',
@@ -20,6 +19,7 @@ enum Forms {
 
 const Autex = () => {
     const [selectedAutex, setSelectedAutex] = useState<string>('')
+    const [autex, setAutex] = useState<IAutex>()
     const [autexList, setAutexList] = useState<IAutex[]>([])
     const [trees, setTrees] = useState<ITree[]>([])
     const [query, setQuery] = useState<IQueryTree>({ autexIds: '', limit: 10, page: 0, count: 1, order: 'asc', orderBy: '', searchBy: '' })
@@ -38,10 +38,11 @@ const Autex = () => {
     }
     const onSelectAutex = (event: SelectChangeEvent<string>) => {
         setSelectedAutex(event.target.value)
+        const newAutex = autexList.find((item) => item.id === parseInt(event.target.value))
+        if (newAutex) {
+            setAutex(newAutex)
+        }
     }
-    const getAutexSelectedData = (id: string): IAutex | undefined => {
-        return autexList.find((autex) => autex.id === parseInt(id)) ?? undefined;
-    };
     const getAutexTrees = async (autexId: string) => {
         const { data, total } = await ListTreesService({ autexIds: autexId, page: query.page, limit: query.limit, order: query.order, orderBy: query.orderBy, searchBy: query.searchBy })
         setTrees(data)
@@ -126,12 +127,12 @@ const Autex = () => {
                             <Grid item xs={12} spacing={2}>
                                 <Grid item xs={6} >
                                     <Typography variant="body1">
-                                        <span style={{ fontWeight: 'bold' }}>Cod. Autex </span>{getAutexSelectedData(selectedAutex)?.code}
+                                        <span style={{ fontWeight: 'bold' }}>Cod. Autex </span>{autex?.code}
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={6} >
                                     <Typography variant="body1">
-                                        <span style={{ fontWeight: 'bold' }}>Autex </span>{getAutexSelectedData(selectedAutex)?.description}
+                                        <span style={{ fontWeight: 'bold' }}>Autex </span>{autex?.description}
                                     </Typography>
                                 </Grid>
                             </Grid>
@@ -199,16 +200,17 @@ const Autex = () => {
                 >
                     {form === Forms.createForm && selectedAutex && (
                         <CreateTrees
-                            autex={getAutexSelectedData(selectedAutex)}
+                            autex={autex}
                         />
                     )}
-                    {form === Forms.importForm && (
+                    {form === Forms.importForm && autex && (
                         <TreeImportForm
-                            autex={getAutexSelectedData(selectedAutex)}
+                            autex={autex}
                         />
                     )}
-                    {form === Forms.fellForm && (
-                        <FellTrees
+                    {form === Forms.fellForm && autex && (
+                        <FellTreesTable
+                            autex={autex}
                             trees={treesSelected}
                         />
                     )}

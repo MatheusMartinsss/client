@@ -1,4 +1,5 @@
 
+import { ICreateTransaction } from "@/types/transaction/transaction";
 import api from "@/utils/api"
 import { AxiosError } from "axios";
 
@@ -20,7 +21,7 @@ export const ListTransactions = async ({ from, to, type }: { from?: Date | null,
     }
 };
 
-export const createTransaction = async (body: any) => {
+export const createTransaction = async (body: ICreateTransaction) => {
     try {
         const response = await api.post(`/transaction`, body);
         return response.data;
