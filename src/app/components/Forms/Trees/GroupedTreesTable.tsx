@@ -129,12 +129,12 @@ export const GroupedTreesTable = ({ data, order, orderBy, handleSubmit }: TreesT
                                     <TableCell>{row?.volumeM3.toFixed(3)}</TableCell>
                                     <TableCell >
                                         <Autocomplete
-                                            options={productList}
+                                            options={productList ?? []}
                                             renderInput={(params) => <TextField {...params} label="Referencia" />}
-                                            getOptionLabel={(option) => getOptionName(option)}
+                                            getOptionLabel={(option) => getOptionName(option) ?? ''}
                                             renderOption={(props, option) => (
                                                 <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-                                                    {option.scientificName} {option.commonName}
+                                                    {option?.scientificName} {option?.commonName}
                                                 </Box>
                                             )}
                                             PaperComponent={({ children }) => {
