@@ -14,7 +14,6 @@ export const Header = () => {
                 backdropFilter: 'blur(6px)',
                 position: 'sticky',
                 backgroundColor: alpha(common.white, 0.5),
-                width: '100%',
                 display: 'flex',
                 height: 64,
                 zIndex: (theme) => theme.zIndex.appBar,

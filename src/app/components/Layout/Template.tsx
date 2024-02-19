@@ -1,4 +1,5 @@
-import { Box } from "@mui/material"
+"use client"
+import { Box, styled } from "@mui/material"
 import { ReactNode } from "react"
 import { Header } from "./Header"
 import { Sidebar } from "./SideBar"
@@ -6,15 +7,25 @@ type TemplateProps = {
     children: ReactNode
 }
 
+const ContentBox = styled(Box)({
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '90vh',
+    maxWidth: 'calc(100vw - 240px)',
+    padding: '20px 15px 10px 15px',
+})
 const Template = ({ children }: TemplateProps) => {
     return (
         <Box sx={{ display: 'flex' }}>
             <Sidebar />
-            <Box display='flex' flexDirection='column' width='100%'>
+            <Box sx={{
+                width: 'calc(100% - 240px)',
+                flexDirection: 'column'
+            }} >
                 <Header />
-                <Box component='main' sx={{ p: 4, display: 'flex', flexDirection: 'column', height: '90vh' }} >
+                <ContentBox>
                     {children}
-                </Box>
+                </ContentBox>
             </Box>
         </Box>
     )

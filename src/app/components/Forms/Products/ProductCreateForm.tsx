@@ -12,7 +12,7 @@ interface ProductCreateFormProps {
 
 const ProductCreateForm = ({ onCreate, previousProduct }: ProductCreateFormProps) => {
     const validationSchema = Yup.object({
-        id: Yup.number(),
+        id: Yup.number().nullable(),
         commonName: Yup.string().required("Campo obrigatório").max(32),
         scientificName: Yup.string().required("Campo obrigatório").max(32),
         description: Yup.string(),
@@ -20,7 +20,7 @@ const ProductCreateForm = ({ onCreate, previousProduct }: ProductCreateFormProps
 
     const formik = useFormik({
         initialValues: {
-            id: undefined,
+            id: null,
             commonName: "" || previousProduct?.commonName,
             scientificName: "" || previousProduct?.scientificName,
             description: "",

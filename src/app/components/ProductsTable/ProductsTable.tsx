@@ -8,7 +8,7 @@ interface ProductsTableProps {
 
 export const ProductsTable = ({ products }: ProductsTableProps) => {
     return (
-        products.length ? (
+        products?.length ? (
             <Box >
                 <TableContainer sx={{
                     marginTop: 2,

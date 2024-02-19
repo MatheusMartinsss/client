@@ -1,7 +1,7 @@
 import { IItem } from "../items/item";
 
 export interface IProduct {
-    id?: number | undefined;
+    id: number | null;
     commonName?: string;
     scientificName?: string;
     description?: string;

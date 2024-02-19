@@ -10,28 +10,21 @@ import FilterDateInput from "@/app/components/FilterDateInput/FilterDateInput";
 import ItemsTable from "@/app/components/ItemsTable/ItemsTable";
 import { inventory } from "@/types/inventory/inventory";
 import { ListInventorys } from "@/services/inventoryService";
-import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
-import CarpenterRoundedIcon from '@mui/icons-material/CarpenterRounded';
 import Modal from "@/app/components/Modal/Modal";
 import TransactionAddForm from "@/app/components/Forms/Transaction/TransactionAddForm";
 import TransactionRemoveForm from "@/app/components/Forms/Transaction/TransactionRemoveForm";
 import { Reports } from "@/app/components/Forms/Reports/Reports";
-
-enum Forms {
-    add = 'Entrada',
-    remove = 'Saida',
-    reports = 'Relatorios'
-}
+import { Forms, MenuOptions } from "@/app/components/ItemMenuOptions/MenuOptions";
+import { useSearchParams } from "next/navigation";
 
 export default function Home() {
-
+    const searchParams = useSearchParams()
     const [items, setItems] = useState<IItem[]>([])
     const [query, setQuery] = useState<ItemQuerys>({ inventoryId: '', includeArchived: false, searchBy: '', from: null, to: null, order: 'asc', orderBy: '' })
     const [inventorysList, setInventorysList] = useState<inventory[]>([])
-    const [open, setOpen] = useState<boolean>(false)
-    const [form, setForm] = useState<Forms | null>(null)
     const [itemsSelected, setItemsSelected] = useState<IItem[]>([])
-
+    const open = searchParams.has('form')
+    const form = searchParams.get('form')
     useEffect(() => {
         getInventorys()
     }, [])
@@ -39,13 +32,7 @@ export default function Home() {
         getItems()
     }, [query])
 
-    const handleModal = (form?: Forms | null) => {
-        setOpen((state) => !state)
-        setForm(form || null)
-        if (!form) {
-            clearItemsSelected()
-        }
-    }
+    console.log(form)
 
     const getInventorys = async () => {
         await ListInventorys({
@@ -106,16 +93,16 @@ export default function Home() {
     const clearItemsSelected = () => {
         setItemsSelected([])
     }
+    const closeModal = () => {
 
+    }
     const onCreateItemSucces = (item: any) => {
         getItems()
         getInventorys()
-        handleModal(null)
     }
     const onRemoveItemsSuccess = (result: any) => {
         getItems()
         getInventorys()
-        handleModal(null)
     }
     const handleOrderQuery = (key: string) => {
         setQuery((state) => ({ ...state, order: state.order === 'asc' ? 'desc' : 'asc', orderBy: key }))
@@ -228,86 +215,25 @@ export default function Home() {
                             handleSortChange={handleOrderQuery}
                         />
                     </Box>
-                    <Box
-                        sx={{
-                            width: '100px',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'flex-start',
-                            alignItems: 'center',
-                            padding: '50px 5px 20px 5px',
-                        }}
-                    >
-                        <IconButton
-                            name="add"
-                            size="large"
-                            onClick={() => handleModal(Forms.add)}
-                            sx={{
-                                width: '50px',
-                                height: '50px',
-                                backgroundColor: '#f5f5f5',
-                                borderRadius: '50%',
-                                margin: '0 0 20px 0',
-                            }}
-                        >
-                            <AddCircleOutlineRoundedIcon sx={{ width: '100%', height: '100%' }} />
-                        </IconButton>
-                        <IconButton
-                            name="add"
-                            size="large"
-                            onClick={() => handleModal(Forms.remove)}
-                            sx={{
-                                width: '50px',
-                                height: '50px',
-                                backgroundColor: '#f5f5f5',
-                                borderRadius: '50%',
-                                margin: '0 0 20px 0',
-                                boxShadow: itemsSelected.length > 0 ? '0 0 10px rgba(255, 0, 0, 0.5)' : 'none',
-                            }}
-                        >
-                            <CarpenterRoundedIcon sx={{ width: '100%', height: '100%' }} />
-                        </IconButton>
-                        <IconButton
-                            name="add"
-                            size="large"
-                            onClick={() => handleModal(Forms.reports)}
-                            sx={{
-                                width: '50px',
-                                height: '50px',
-                                backgroundColor: '#f5f5f5',
-                                borderRadius: '50%',
-                                margin: '0 0 20px 0',
-                                boxShadow: itemsSelected.length > 0 ? '0 0 10px rgba(255, 0, 0, 0.5)' : 'none',
-                            }}
-                        >
-                            <CarpenterRoundedIcon sx={{ width: '100%', height: '100%' }} />
-                        </IconButton>
-                    </Box>
+                    <MenuOptions></MenuOptions>
                 </Box>
             </Box>
             <Modal
                 open={open}
-                handleModal={handleModal}
-                title={form?.toString()}
+                handleModal={closeModal}
             >
-                {form === Forms.add &&
+                {form === Forms.add && (
                     <TransactionAddForm
-                        onSucces={onCreateItemSucces}
-                        onCancel={() => handleModal(null)}
+                        onCancel={() => console.log('')}
+                        onSucces={() => console.log('')}
                     />
-                }
-                {form === Forms.remove &&
-                    <TransactionRemoveForm
-                        items={itemsSelected}
-                        onSucces={onRemoveItemsSuccess}
-                        onCancel={() => handleModal(null)}
+                )}
+                  {form === Forms.add && (
+                    <TransactionAddForm
+                        onCancel={() => console.log('')}
+                        onSucces={() => console.log('')}
                     />
-                }
-                {form === Forms.reports &&
-                    <Reports
-
-                    />
-                }
+                )}
             </Modal>
         </Box >
     )

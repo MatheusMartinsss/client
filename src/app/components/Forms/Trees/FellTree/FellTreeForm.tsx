@@ -147,10 +147,11 @@ export const FellTreeForm = ({ handleSubmit, data }: FellTreeFormProps) => {
                                                         meters: fell.meters.toString()
                                                     }).toFixed(3);
                                                     fell.commonName = data.commonName,
-                                                        fell.scientificName = data.scientificName
+                                                    fell.scientificName = data.scientificName
                                                     fell.product_id = data.product_id
                                                     fell.inventory_id = data.inventory_id
                                                     fell.tree_id = data.id ?? null
+                                                    fell.code = data.code
 
                                                     const isLastIndex = index === values.items.length - 1
                                                     const TotalM3 = values.items.reduce((acc, b) => {
@@ -242,6 +243,7 @@ export const FellTreeForm = ({ handleSubmit, data }: FellTreeFormProps) => {
                                                                                 <IconButton
                                                                                     onClick={() => {
                                                                                         push({
+                                                                                            code: data.code,
                                                                                             commonName: data.commonName,
                                                                                             scientificName: data.scientificName,
                                                                                             product_id: data.product_id,
