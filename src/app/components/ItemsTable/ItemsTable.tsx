@@ -3,24 +3,22 @@ import { Box, Checkbox, IconButton, Paper, Table, TableBody, TableCell, TableCon
 import TableCellDate from "../TableCellDate/TableCellDate"
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import React from "react";
-
+import useFilterUpdater from "@/utils/hooks/useFilterUpdate";
+import { useSearchParams } from "next/navigation";
 interface ItemsTableProps {
     items: IItem[]
     handleSelectItem: (item: IItem) => void
     itemsSelected: IItem[]
     clearItemsSelected: () => void
-    handleSortChange: (key: string) => void
-    order?: "asc" | "desc"
-    orderBy?: string
 }
 const colummns = [{
     id: '', label: '#', sortable: false,
 }, {
     id: 'code', label: 'Plaqueta', sortable: true
 }, {
-    id: 'scientificName', label: 'Nome Cientifico', sortable: true
+    id: 'scientificName', label: 'Cientifico', sortable: true
 }, {
-    id: 'commonName', label: 'Nome Popular', sortable: true
+    id: 'commonName', label: 'Popular', sortable: true
 }, {
     id: 'section', label: 'Secção', sortable: true
 }, {
@@ -42,8 +40,17 @@ const colummns = [{
 }]
 
 
-export const ItemsTable = ({ items, handleSelectItem, itemsSelected, clearItemsSelected, order, orderBy, handleSortChange }: ItemsTableProps) => {
+export const ItemsTable = ({
+    items,
+    handleSelectItem,
+    itemsSelected,
+    clearItemsSelected,
+}: ItemsTableProps) => {
+    const searchParams = useSearchParams()
+    const updateFilters = useFilterUpdater()
 
+    const orderBy = searchParams.get('orderBy') ?? ''
+    const order: 'asc' | 'desc' = (searchParams.get('order') as 'asc' | 'desc') ?? 'asc';
 
     const SelectItem = (item: IItem) => {
         handleSelectItem(item)
@@ -51,64 +58,73 @@ export const ItemsTable = ({ items, handleSelectItem, itemsSelected, clearItemsS
     const isSelected = (id: number | undefined) => {
         return itemsSelected?.some((selectedItem) => selectedItem.id === id);
     };
-
-    const itemsSelectedVolume = itemsSelected.reduce((a, b) => {
-        return a + b.volumeM3
-    }, 0.00).toFixed(3)
-
     const volumeTotal = items?.reduce((a, b) => {
         return a + b.volumeM3
     }, 0.00).toFixed(3)
 
+    const sortChange = (key: string) => {
+        updateFilters('orderBy', key)
+    }
     return (
-        items?.length ? (
+        items.length ? (
             <Box sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                width: '100%'
+                width: '100%',
+                height: '100%'
             }} >
-                {itemsSelected.length > 0 &&
+                <TableContainer
+                    component={Paper}
+                    elevation={1}
+                    sx={{
+                        borderRadius: '16px',
+                        minHeight: '550px'
+                    }}
+                >
                     <Box
-                        mt={2}
                         padding={2}
                         display='flex'
                         justifyContent='space-between'
                         alignItems='center'
-                        sx={{ backgroundColor: '#f0f0f0' }}
+                        maxHeight='50px'
+                        sx={{}}
                     >
-                        <>
-                            <Typography>{itemsSelected.length} Selecionados</Typography>
-                            <IconButton
-                                size="small"
-                                onClick={clearItemsSelected}
-                            >
-                                <DeleteOutlineIcon />
-                            </IconButton>
-                        </>
+
+                        <Typography variant="h6" fontWeight='bolder'>Items</Typography>
+                        {itemsSelected.length > 0 && (
+                            <Box display='flex' alignItems='center'>
+                                <Typography>{itemsSelected.length} Selecionados</Typography>
+                                <IconButton
+                                    size="small"
+                                    onClick={clearItemsSelected}
+                                >
+                                    <DeleteOutlineIcon />
+                                </IconButton>
+                            </Box>
+                        )}
                     </Box>
-                }
-                <TableContainer sx={{
-                    marginTop: 2,
-                    overflowY: 'auto',
-                    height: 450,
-                }}>
                     <Table >
-                        <TableHead sx={{ backgroundColor: '#f0f0f0', position: 'sticky', top: 0 }} >
+                        <TableHead sx={{ position: 'sticky', top: 0 }} >
+
                             <TableRow>
                                 {colummns.map((colum) => {
                                     const isSortable = colum.sortable
-                                    const isSelected = orderBy === colum.id
+                                    const isSelected = colum.id === orderBy
                                     return (
                                         <TableCell
                                             key={colum.id}
-                                            sortDirection={isSelected ? order : false}
+                                            sortDirection={order}
+                                            align="center"
+                                            sx={{
+                                                fontSize: 'bolder'
+                                            }}
                                         >
                                             {isSortable ?
                                                 <TableSortLabel
                                                     active={isSelected}
-                                                    direction={isSelected ? order : 'asc'}
+                                                    direction={order}
                                                     onClick={() => {
-                                                        handleSortChange(colum.id)
+                                                        sortChange(colum.id)
                                                     }}
                                                 >
                                                     {colum.label}
@@ -136,16 +152,16 @@ export const ItemsTable = ({ items, handleSelectItem, itemsSelected, clearItemsS
                                                 checked={itemIsSelected}
                                             />
                                         </TableCell>
-                                        <TableCell component="th" scope="row">{row.code}</TableCell>
-                                        <TableCell>{row.scientificName}</TableCell>
-                                        <TableCell>{row.commonName}</TableCell>
-                                        <TableCell>{row.section}</TableCell>
-                                        <TableCell>{row.d1}</TableCell>
-                                        <TableCell>{row.d2}</TableCell>
-                                        <TableCell>{row.d3}</TableCell>
-                                        <TableCell>{row.d4}</TableCell>
-                                        <TableCell>{row.meters}</TableCell>
-                                        <TableCell>{row.volumeM3}</TableCell>
+                                        <TableCell align="center" >{row.code}</TableCell>
+                                        <TableCell align="center">{row.scientificName}</TableCell>
+                                        <TableCell align="center">{row.commonName}</TableCell>
+                                        <TableCell align="center">{row.section}</TableCell>
+                                        <TableCell align="center">{row.d1}</TableCell>
+                                        <TableCell align="center">{row.d2}</TableCell>
+                                        <TableCell align="center">{row.d3}</TableCell>
+                                        <TableCell align="center">{row.d4}</TableCell>
+                                        <TableCell align="center">{row.meters}</TableCell>
+                                        <TableCell align="center">{row.volumeM3}</TableCell>
                                         <TableCellDate date={row.createdAt} />
                                         <TableCellDate date={row.archivedAt} />
                                     </TableRow>

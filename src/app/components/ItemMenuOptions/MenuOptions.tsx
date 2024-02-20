@@ -1,9 +1,13 @@
 "use client"
-import { useEffect } from 'react';
-import { Box, IconButton, SvgIcon, Icon } from "@mui/material";
+import { Box, IconButton, SvgIcon } from "@mui/material";
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import CarpenterRoundedIcon from '@mui/icons-material/CarpenterRounded';
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, useRouter } from "next/navigation"
+import Modal from "@/app/components/Modal/Modal";
+import TransactionAddForm from "@/app/components/Forms/Transaction/TransactionAddForm";
+import TransactionRemoveForm from "@/app/components/Forms/Transaction/TransactionRemoveForm";
+import useFilterUpdater from "@/utils/hooks/useFilterUpdate";
+
 export enum Forms {
     add = 'add',
     remove = 'remove',
@@ -14,8 +18,6 @@ type MenuProps = {
     Icon: typeof SvgIcon;
     name: string;
 }
-
-
 const Options: MenuProps[] = [{
     Icon: AddCircleOutlineRoundedIcon,
     name: 'add',
@@ -29,45 +31,45 @@ const Options: MenuProps[] = [{
     name: 'report',
     form: Forms.reports
 }]
-
-
 export const MenuOptions = () => {
+    const updateFilters = useFilterUpdater()
     const searchParams = useSearchParams()
-
-    const updateParams = (form: string) => {
-        const params = new URLSearchParams(searchParams.toString())
-        params.set('form', form)
-        window.history.pushState(null, '', `?${params.toString()}`)
-    }
-
+    const router = useRouter()
+    const queryParams = Object.fromEntries(searchParams);
+    const open = searchParams.has('form')
     const form = searchParams.get('form')
 
-    useEffect(() => {
-        console.log(form)
-    }, [form])
 
-    console.log(form)
     return (
-        <Box display='flex' flexDirection='column'>
+        <Box display='flex' flexDirection='column' >
             {Options.map((option, idx) => {
                 return (
-                    <Box key={idx}>
-                        <IconButton
-                            name={option.name}
-                            onClick={() => updateParams(option.form)}
-                            sx={{
-                                width: '50px',
-                                height: '50px',
-                                backgroundColor: '#f5f5f5',
-                                borderRadius: '50%',
-                                margin: '0 0 20px 0',
-                            }}
-                        >
-                            <option.Icon />
-                        </IconButton>
-                    </Box>
+                    <IconButton
+                        key={idx}
+                        name={option.name}
+                        onClick={() => updateFilters('form', option.form)}
+                        sx={{
+                            width: '50px',
+                            height: '50px',
+                            backgroundColor: '#f5f5f5',
+                            borderRadius: '50%',
+                        }}
+                    >
+                        <option.Icon />
+                    </IconButton>
                 )
             })}
+            <Modal
+                open={open}
+                handleModal={() => updateFilters('form', '')}
+            >
+                {form === Forms.add && (
+                    <TransactionAddForm
+                        onCancel={() => console.log('')}
+                        onSucces={() => console.log('')}
+                    />
+                )}
+            </Modal>
         </Box>
     )
 }

@@ -3,12 +3,12 @@ import TextField, { TextFieldProps } from '@mui/material/TextField';
 import { FormControl } from '@mui/material';
 import { format } from 'date-fns';
 
-interface DateInputProps {
+type DateInputProps = {
     label?: string;
     value?: Date | null;
     onChange: (newValue: Date | null) => void;
     props?: TextFieldProps
-}
+} & TextFieldProps
 
 const FilterDateInput: React.FC<DateInputProps> = ({ label, value, onChange, props }) => {
 
@@ -29,7 +29,7 @@ const FilterDateInput: React.FC<DateInputProps> = ({ label, value, onChange, pro
             InputLabelProps={{
                 shrink: true,
             }}
-           
+
 
         />
     );

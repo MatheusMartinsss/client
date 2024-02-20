@@ -1,58 +1,37 @@
 "use client"
 import { ListItems } from "@/services/itemService";
 import { IItem, ItemQuerys } from "@/types/items/item";
-import { Box, Grid, IconButton, InputAdornment, MenuItem, Paper, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
-import debounce from 'lodash/debounce';
+import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
-import SearchIcon from '@mui/icons-material/Search';
-import FilterButton from "@/app/components/FilterButton/FilterButton";
-import FilterDateInput from "@/app/components/FilterDateInput/FilterDateInput";
 import ItemsTable from "@/app/components/ItemsTable/ItemsTable";
-import { inventory } from "@/types/inventory/inventory";
-import { ListInventorys } from "@/services/inventoryService";
-import Modal from "@/app/components/Modal/Modal";
-import TransactionAddForm from "@/app/components/Forms/Transaction/TransactionAddForm";
-import TransactionRemoveForm from "@/app/components/Forms/Transaction/TransactionRemoveForm";
-import { Reports } from "@/app/components/Forms/Reports/Reports";
-import { Forms, MenuOptions } from "@/app/components/ItemMenuOptions/MenuOptions";
+import { MenuOptions } from "@/app/components/ItemMenuOptions/MenuOptions";
 import { useSearchParams } from "next/navigation";
+import FiltersHeader from "./components/FiltersHeader";
 
 export default function Home() {
     const searchParams = useSearchParams()
     const [items, setItems] = useState<IItem[]>([])
-    const [query, setQuery] = useState<ItemQuerys>({ inventoryId: '', includeArchived: false, searchBy: '', from: null, to: null, order: 'asc', orderBy: '' })
-    const [inventorysList, setInventorysList] = useState<inventory[]>([])
     const [itemsSelected, setItemsSelected] = useState<IItem[]>([])
-    const open = searchParams.has('form')
-    const form = searchParams.get('form')
-    useEffect(() => {
-        getInventorys()
-    }, [])
+    const from = searchParams.get('from') ?? ''
+    const to = searchParams.get('to') ?? ''
+    const searchBy = searchParams.get('searchBy') ?? ''
+    const includeArchived = searchParams.has('includeArchived')
+    const inventoryId = searchParams.get('inventoryId') ?? ''
+    const order: 'asc' | 'desc' = (searchParams.get('order') as 'asc' | 'desc') ?? 'asc';
+    const orderBy = searchParams.get('orderBy') ?? ''
     useEffect(() => {
         getItems()
-    }, [query])
-
-    console.log(form)
-
-    const getInventorys = async () => {
-        await ListInventorys({
-            includeVolume: true
-        }).then((response) => {
-            setInventorysList(response);
-        }).catch((error) => {
-            console.log(error)
-        })
-    }
+    }, [from, to, searchBy, includeArchived, inventoryId, order, orderBy])
 
     const getItems = async () => {
         await ListItems({
-            inventoryId: query.inventoryId,
-            includeArchived: query.includeArchived,
-            from: query.from,
-            to: query.to,
-            searchBy: query.searchBy,
-            order: query.order,
-            orderBy: query.orderBy,
+            inventoryId: inventoryId,
+            includeArchived: includeArchived,
+            from: from,
+            to: to,
+            searchBy: searchBy,
+            order: order,
+            orderBy: orderBy,
 
         })
             .then((response) => {
@@ -60,22 +39,6 @@ export default function Home() {
             }).catch((error) => {
                 console.log(error)
             })
-    }
-
-    const onChangeFilterText = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        if (e.target.value) {
-            setQuery((state) => ({ ...state, searchBy: e.target.value }))
-        } else {
-            setQuery((state) => ({ ...state, searchBy: '' }))
-        }
-    }
-    const onSelectInventory = (event: SelectChangeEvent<string>) => {
-        if (parseInt(event.target.value) === 0) {
-            setQuery((state) => ({ ...state, inventoryId: '' }))
-        } else {
-            setQuery((state) => ({ ...state, inventoryId: event.target.value }))
-        }
-
     }
     const isSelected = (id: number | undefined) => {
         return itemsSelected?.some((selectedItem) => selectedItem.id === id);
@@ -93,148 +56,29 @@ export default function Home() {
     const clearItemsSelected = () => {
         setItemsSelected([])
     }
-    const closeModal = () => {
 
-    }
-    const onCreateItemSucces = (item: any) => {
-        getItems()
-        getInventorys()
-    }
-    const onRemoveItemsSuccess = (result: any) => {
-        getItems()
-        getInventorys()
-    }
-    const handleOrderQuery = (key: string) => {
-        setQuery((state) => ({ ...state, order: state.order === 'asc' ? 'desc' : 'asc', orderBy: key }))
-    }
     return (
-        <Box>
-            <Box
-                display='flex'
-                flexDirection='column'
-                p={2}
-                component={Paper}
-                sx={{
-                    borderRadius: '8px',
-                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                    background: '#fff',
-                }}
-            >
-                <Grid container spacing={2} >
-                    <Grid item xs={4}>
-                        <Typography variant='caption' fontWeight='600'>Pesquisar</Typography>
-                        <TextField
-                            onChange={debounce(onChangeFilterText, 300)}
-                            placeholder="Pesquisar nome, nome cientifico, plaqueta..."
-                            fullWidth
-                            variant="outlined"
-                            size="small"
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <SearchIcon color="action" />
-                                    </InputAdornment>
-                                ),
-                            }}
-                        ></TextField>
-                    </Grid>
-                    <Grid item xs={12}>
-                    </Grid>
-                    <Grid item xs={2} display='flex' alignItems='flex-end' >
-                        <FilterButton
-                            onClick={() => setQuery((state) => ({ ...state, includeArchived: !state.includeArchived }))}
-                            isActive={query.includeArchived}
-                        >
-                            Removidas
-                        </FilterButton>
-                    </Grid>
-                    <Grid item xs={2} container>
-                        <Grid item xs={12}>
-                            <Typography variant='caption' fontWeight='600'>Data Inicial</Typography>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <FilterDateInput
-                                value={query.from}
-                                props={{
-                                    fullWidth: true,
-                                    size: 'small'
-                                }}
-                                onChange={(e) => setQuery((state) => ({ ...state, from: e }))}
-                            />
-                        </Grid>
-                    </Grid>
-                    <Grid item xs={2} container>
-                        <Grid item xs={12}>
-                            <Typography variant='caption' fontWeight='600'>Data Final</Typography>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <FilterDateInput
-                                value={query.to}
-                                props={{
-                                    fullWidth: true,
-                                    size: 'small'
-                                }}
-                                onChange={(e) => setQuery((state) => ({ ...state, to: e }))}
-                            />
-                        </Grid>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <Typography variant='caption' fontWeight='600'>Patio</Typography>
-                        <Select
-                            value={query?.inventoryId?.toString()}
-                            onChange={onSelectInventory}
-                            fullWidth
-                            id="inventory-select"
-                            size="small"
-                        >
-                            {inventorysList?.length > 0 && inventorysList?.map((item: inventory) => (
-                                <MenuItem
-                                    key={item.id}
-                                    value={item.id}>
-                                    {item.name} - Volume {item.totalVolumeM3}M3
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </Grid>
-                </Grid>
-                <Box sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    width: '100%'
-                }} >
-                    <Box sx={{
-                        width: '100%'
-                    }}>
-                        <ItemsTable
-                            items={items}
-                            handleSelectItem={onSelectItem}
-                            itemsSelected={itemsSelected}
-                            order={query.order}
-                            orderBy={query.orderBy}
-                            clearItemsSelected={clearItemsSelected}
-                            handleSortChange={handleOrderQuery}
-                        />
-                    </Box>
-                    <MenuOptions></MenuOptions>
-                </Box>
+        <Box sx={{
+            display: 'flex',
+            width: '100%',
+            flexDirection: 'column',
+        }}>
+            <FiltersHeader />
+            <Box sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                padding: '5px 0px 0px 0px',
+                justifyContent: 'space-between',
+                gap: '5px'
+            }} >
+                <ItemsTable
+                    items={items}
+                    handleSelectItem={onSelectItem}
+                    itemsSelected={itemsSelected}
+                    clearItemsSelected={clearItemsSelected}
+                />
+                <MenuOptions />
             </Box>
-            <Modal
-                open={open}
-                handleModal={closeModal}
-            >
-                {form === Forms.add && (
-                    <TransactionAddForm
-                        onCancel={() => console.log('')}
-                        onSucces={() => console.log('')}
-                    />
-                )}
-                  {form === Forms.add && (
-                    <TransactionAddForm
-                        onCancel={() => console.log('')}
-                        onSucces={() => console.log('')}
-                    />
-                )}
-            </Modal>
         </Box >
     )
 }
