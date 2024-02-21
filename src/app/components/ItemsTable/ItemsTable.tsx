@@ -1,5 +1,5 @@
 import { IItem } from "@/types/items/item"
-import { Box, Checkbox, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, TableSortLabel } from "@mui/material"
+import { Box, Checkbox, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, TableSortLabel, TableFooter, TablePagination } from "@mui/material"
 import TableCellDate from "../TableCellDate/TableCellDate"
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import React from "react";
@@ -10,6 +10,7 @@ interface ItemsTableProps {
     handleSelectItem: (item: IItem) => void
     itemsSelected: IItem[]
     clearItemsSelected: () => void
+    count?: number | 1
 }
 const colummns = [{
     id: '', label: '#', sortable: false,
@@ -45,10 +46,13 @@ export const ItemsTable = ({
     handleSelectItem,
     itemsSelected,
     clearItemsSelected,
+    count = 1
 }: ItemsTableProps) => {
     const searchParams = useSearchParams()
     const updateFilters = useFilterUpdater()
 
+    const page = Number(searchParams.get('page')) || 0
+    const rowsPerPage = Number(searchParams.get('rows')) || 10
     const orderBy = searchParams.get('orderBy') ?? ''
     const order: 'asc' | 'desc' = (searchParams.get('order') as 'asc' | 'desc') ?? 'asc';
 
@@ -67,133 +71,120 @@ export const ItemsTable = ({
     }
     return (
         items.length ? (
-            <Box sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                width: '100%',
-                height: '100%'
-            }} >
-                <TableContainer
-                    component={Paper}
-                    elevation={1}
-                    sx={{
-                        borderRadius: '16px',
-                        minHeight: '550px'
-                    }}
-                >
-                    <Box
-                        padding={2}
-                        display='flex'
-                        justifyContent='space-between'
-                        alignItems='center'
-                        maxHeight='50px'
-                        sx={{}}
-                    >
-
-                        <Typography variant="h6" fontWeight='bolder'>Items</Typography>
-                        {itemsSelected.length > 0 && (
-                            <Box display='flex' alignItems='center'>
-                                <Typography>{itemsSelected.length} Selecionados</Typography>
-                                <IconButton
-                                    size="small"
-                                    onClick={clearItemsSelected}
-                                >
-                                    <DeleteOutlineIcon />
-                                </IconButton>
-                            </Box>
-                        )}
-                    </Box>
-                    <Table >
-                        <TableHead sx={{ position: 'sticky', top: 0 }} >
-
-                            <TableRow>
-                                {colummns.map((colum) => {
-                                    const isSortable = colum.sortable
-                                    const isSelected = colum.id === orderBy
-                                    return (
-                                        <TableCell
-                                            key={colum.id}
-                                            sortDirection={order}
-                                            align="center"
-                                            sx={{
-                                                fontSize: 'bolder'
-                                            }}
-                                        >
-                                            {isSortable ?
-                                                <TableSortLabel
-                                                    active={isSelected}
-                                                    direction={order}
-                                                    onClick={() => {
-                                                        sortChange(colum.id)
-                                                    }}
-                                                >
-                                                    {colum.label}
-                                                </TableSortLabel>
-                                                : (colum.label)
-                                            }
-                                        </TableCell>
-                                    )
-                                })}
-                            </TableRow>
-                        </TableHead>
-                        <TableBody >
-                            {items.map((row) => {
-                                const itemIsSelected = isSelected(row.id)
+            <TableContainer
+                sx={{
+                    height: '600px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    borderRadius: '16px',
+                }}
+            >
+                <Table >
+                    <TableHead >
+                        <TableRow sx={{
+                            backgroundColor: '#2c6433',
+                            position: 'sticky',
+                            top: 0,
+                            zIndex: 999
+                        }}>
+                            {colummns.map((colum) => {
+                                const isSortable = colum.sortable
+                                const isSelected = colum.id === orderBy
                                 return (
-                                    <TableRow
-                                        onClick={() => SelectItem(row)}
-                                        key={row.id}
-                                        selected={itemIsSelected}
-                                        role="checkbox"
-                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    <TableCell
+                                        key={colum.id}
+                                        sortDirection={order}
+                                        align="center"
+                                        sx={{
+                                            fontSize: 'bolder',
+                                            color: 'white'
+                                        }}
                                     >
-                                        <TableCell padding="checkbox">
-                                            <Checkbox
-                                                checked={itemIsSelected}
-                                            />
-                                        </TableCell>
-                                        <TableCell align="center" >{row.code}</TableCell>
-                                        <TableCell align="center">{row.scientificName}</TableCell>
-                                        <TableCell align="center">{row.commonName}</TableCell>
-                                        <TableCell align="center">{row.section}</TableCell>
-                                        <TableCell align="center">{row.d1}</TableCell>
-                                        <TableCell align="center">{row.d2}</TableCell>
-                                        <TableCell align="center">{row.d3}</TableCell>
-                                        <TableCell align="center">{row.d4}</TableCell>
-                                        <TableCell align="center">{row.meters}</TableCell>
-                                        <TableCell align="center">{row.volumeM3}</TableCell>
-                                        <TableCellDate date={row.createdAt} />
-                                        <TableCellDate date={row.archivedAt} />
-                                    </TableRow>
+                                        {isSortable ?
+                                            <TableSortLabel
+                                                active={isSelected}
+                                                direction={order}
+                                                onClick={() => {
+                                                    sortChange(colum.id)
+                                                }}
+                                            >
+                                                {colum.label}
+                                            </TableSortLabel>
+                                            : (colum.label)
+                                        }
+                                    </TableCell>
                                 )
                             })}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <Box
-                    display='flex'
-                    justifyContent='flex-end'
-                    paddingLeft={5}
-                    paddingRight={5}
-                    sx={{ height: 80, mt: 2 }} >
-
-                    <Box display='flex' sx={{ justifyContent: 'flex-end' }}>
-                        <Typography variant="subtitle1">Volume {volumeTotal}M3</Typography>
-                    </Box>
-                </Box>
-            </Box>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {items.map((row) => {
+                            const itemIsSelected = isSelected(row.id)
+                            return (
+                                <TableRow
+                                    onClick={() => SelectItem(row)}
+                                    key={row.id}
+                                    selected={itemIsSelected}
+                                >
+                                    <TableCell padding="checkbox">
+                                        <Checkbox
+                                            checked={itemIsSelected}
+                                        />
+                                    </TableCell>
+                                    <TableCell align="center" >{row.code}</TableCell>
+                                    <TableCell align="center">{row.scientificName}</TableCell>
+                                    <TableCell align="center">{row.commonName}</TableCell>
+                                    <TableCell align="center">{row.section}</TableCell>
+                                    <TableCell align="center">{row.d1}</TableCell>
+                                    <TableCell align="center">{row.d2}</TableCell>
+                                    <TableCell align="center">{row.d3}</TableCell>
+                                    <TableCell align="center">{row.d4}</TableCell>
+                                    <TableCell align="center">{row.meters}</TableCell>
+                                    <TableCell align="center">{row.volumeM3}</TableCell>
+                                    <TableCellDate date={row.createdAt} />
+                                    <TableCellDate date={row.archivedAt} />
+                                </TableRow>
+                            )
+                        })}
+                    </TableBody>
+                    <TableFooter
+                        sx={{
+                            backgroundColor: '#2c6433',
+                            color: 'white',
+                            position: 'sticky', 
+                            bottom: 0, 
+                            zIndex: 999, 
+                        }}
+                    >
+                        <TableRow>
+                            <TablePagination
+                                colSpan={13}
+                                count={count}
+                                page={page}
+                                rowsPerPage={rowsPerPage}
+                                onPageChange={(_, page) => updateFilters('page', page.toString())}
+                                onRowsPerPageChange={(e) => updateFilters('rows', e.target.value.toString())}
+                                sx={{
+                                    color: 'white'
+                                }}
+                            />
+                        </TableRow>
+                    </TableFooter>
+                </Table>
+            </TableContainer>
         ) : (
             <Box
-                component={Paper}
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
+                width='100%'
                 sx={{
                     marginTop: '16px',
                     borderRadius: '8px',
                     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
                     background: '#f0f0f0',
-                    minHeight: '350px',
+                    minHeight: '550px',
+                    height: '100%'
                 }}
             >
                 <Typography variant="h5" color="#555555">Nenhum item encontrado!</Typography>

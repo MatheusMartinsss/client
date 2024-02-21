@@ -13,6 +13,7 @@ const ContentBox = styled(Box)({
     minHeight: '90vh',
     maxWidth: 'calc(100vw - 240px)',
     padding: '20px 25px 10px 25px',
+
 })
 const Template = ({ children }: TemplateProps) => {
     return (
@@ -23,7 +24,7 @@ const Template = ({ children }: TemplateProps) => {
                 flexDirection: 'column'
             }} >
                 <Header />
-                <ContentBox>
+                <ContentBox bgcolor='#fafafa'>
                     {children}
                 </ContentBox>
             </Box>

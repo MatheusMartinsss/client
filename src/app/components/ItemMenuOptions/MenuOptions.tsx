@@ -34,14 +34,11 @@ const Options: MenuProps[] = [{
 export const MenuOptions = () => {
     const updateFilters = useFilterUpdater()
     const searchParams = useSearchParams()
-    const router = useRouter()
-    const queryParams = Object.fromEntries(searchParams);
     const open = searchParams.has('form')
     const form = searchParams.get('form')
 
-
     return (
-        <Box display='flex' flexDirection='column' >
+        <Box display='flex' flexDirection='column'  >
             {Options.map((option, idx) => {
                 return (
                     <IconButton

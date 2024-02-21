@@ -53,63 +53,67 @@ const FiltersHeader = () => {
             </Grid>
             <Grid item xs={12}>
             </Grid>
-            <Grid item xs={2} display='flex' alignItems='flex-end' >
-                <FilterButton
-                    onClick={() => updateFilters('includeArchived', includeArchived ? 'false' : 'true')}
-                    isActive={includeArchived}
-                >
-                    Removidas
-                </FilterButton>
-            </Grid>
-            <Grid item xs={2} container>
-                <Grid item xs={12}>
-                    <Typography variant='caption' fontWeight='600'>Data Inicial</Typography>
-                </Grid>
-                <Grid item xs={12}>
-                    <TextField
-                        type="date"
-                        fullWidth
-                        value={from}
-                        onChange={(e) => updateFilters('from', e.target.value)}
-                        size="small"
+            <Grid item xs={6} container>
+                <Grid item xs={2} display='flex' alignItems='flex-end' >
+                    <FilterButton
+                        onClick={() => updateFilters('includeArchived', includeArchived ? 'false' : 'true')}
+                        isActive={includeArchived}
                     >
-                    </TextField>
+                        Removidas
+                    </FilterButton>
                 </Grid>
             </Grid>
-            <Grid item xs={2} container>
-                <Grid item xs={12}>
-                    <Typography variant='caption' fontWeight='600'>Data Final</Typography>
+            <Grid item xs={6} container spacing={2}>
+                <Grid item xs={3} container>
+                    <Grid item xs={12}>
+                        <Typography variant='caption' fontWeight='600'>Data Inicial</Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            type="date"
+                            fullWidth
+                            value={from}
+                            onChange={(e) => updateFilters('from', e.target.value)}
+                            size="small"
+                        >
+                        </TextField>
+                    </Grid>
                 </Grid>
-                <Grid item xs={12}>
-                    <TextField
-                        type="date"
-                        onChange={(e) => updateFilters('to', e.target.value)}
-                        fullWidth
-                        value={to}
-                        size="small"
-                    >
+                <Grid item xs={3} container>
+                    <Grid item xs={12}>
+                        <Typography variant='caption' fontWeight='600'>Data Final</Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            type="date"
+                            onChange={(e) => updateFilters('to', e.target.value)}
+                            fullWidth
+                            value={to}
+                            size="small"
+                        >
 
-                    </TextField>
+                        </TextField>
+                    </Grid>
                 </Grid>
-            </Grid>
-            <Grid item xs={3}>
-                <Typography variant='caption' fontWeight='600'>Patio</Typography>
-                <Select
-                    value={inventoryId}
-                    fullWidth
-                    id="inventory-select"
-                    onChange={(e) => updateFilters('inventoryId', e.target.value ?? '')}
-                    size="small"
-                >
-                    <MenuItem value={''}></MenuItem>
-                    {inventorysList?.length > 0 && inventorysList?.map((item: inventory) => (
-                        <MenuItem
-                            key={item.id}
-                            value={item.id}>
-                            {item.name} - Volume {item.volumeM3}M3
-                        </MenuItem>
-                    ))}
-                </Select>
+                <Grid item xs={6}>
+                    <Typography variant='caption' fontWeight='600'>Patio</Typography>
+                    <Select
+                        value={inventoryId}
+                        fullWidth
+                        id="inventory-select"
+                        onChange={(e) => updateFilters('inventoryId', e.target.value ?? '')}
+                        size="small"
+                    >
+                        <MenuItem value={''}></MenuItem>
+                        {inventorysList?.length > 0 && inventorysList?.map((item: inventory) => (
+                            <MenuItem
+                                key={item.id}
+                                value={item.id}>
+                                {item.name} - {item.volumeM3}M3
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </Grid>
             </Grid>
         </Grid>
     )

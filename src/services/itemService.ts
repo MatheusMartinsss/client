@@ -3,7 +3,7 @@ import api from "@/utils/api"
 import saveAs from "file-saver";
 
 
-export const ListItems = async ({ inventoryId, includeArchived = false, searchBy, from, to, order, orderBy }: ItemQuerys) => {
+export const ListItems = async ({ inventoryId, includeArchived = false, searchBy, from, to, order, orderBy, page, limit }: ItemQuerys) => {
     try {
         const response = await api.get(`/item`, {
             params: {
@@ -13,7 +13,9 @@ export const ListItems = async ({ inventoryId, includeArchived = false, searchBy
                 from,
                 to,
                 order,
-                orderBy
+                orderBy,
+                page,
+                limit
             }
         });
         return response.data;

@@ -48,4 +48,6 @@ export interface ItemQuerys {
     includeArchived?: boolean;
     searchBy?: string;
     inventoryId?: string;
+    page?: number
+    limit?: number;
 }

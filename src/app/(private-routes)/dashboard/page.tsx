@@ -1,7 +1,7 @@
 "use client"
 import { ListItems } from "@/services/itemService";
 import { IItem, ItemQuerys } from "@/types/items/item";
-import { Box } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import { useEffect, useState } from "react";
 import ItemsTable from "@/app/components/ItemsTable/ItemsTable";
 import { MenuOptions } from "@/app/components/ItemMenuOptions/MenuOptions";
@@ -11,20 +11,23 @@ import FiltersHeader from "./components/FiltersHeader";
 export default function Home() {
     const searchParams = useSearchParams()
     const [items, setItems] = useState<IItem[]>([])
+    const [count, setCount] = useState<number>(1)
     const [itemsSelected, setItemsSelected] = useState<IItem[]>([])
-    const from = searchParams.get('from') ?? ''
-    const to = searchParams.get('to') ?? ''
-    const searchBy = searchParams.get('searchBy') ?? ''
+    const from = searchParams.get('from') || ''
+    const to = searchParams.get('to') || ''
+    const searchBy = searchParams.get('searchBy') || ''
     const includeArchived = searchParams.has('includeArchived')
-    const inventoryId = searchParams.get('inventoryId') ?? ''
-    const order: 'asc' | 'desc' = (searchParams.get('order') as 'asc' | 'desc') ?? 'asc';
-    const orderBy = searchParams.get('orderBy') ?? ''
+    const inventoryId = searchParams.get('inventoryId') || ''
+    const order: 'asc' | 'desc' = (searchParams.get('order') as 'asc' | 'desc') || 'asc';
+    const orderBy = searchParams.get('orderBy') || ''
+    const page = Number(searchParams.get('page')) || 0
+    const limit = Number(searchParams.get('rows')) || 10
     useEffect(() => {
         getItems()
-    }, [from, to, searchBy, includeArchived, inventoryId, order, orderBy])
+    }, [from, to, searchBy, includeArchived, inventoryId, order, orderBy, page, limit])
 
     const getItems = async () => {
-        await ListItems({
+        const { data, total } = await ListItems({
             inventoryId: inventoryId,
             includeArchived: includeArchived,
             from: from,
@@ -32,13 +35,13 @@ export default function Home() {
             searchBy: searchBy,
             order: order,
             orderBy: orderBy,
+            page: page,
+            limit: limit
 
         })
-            .then((response) => {
-                setItems(response)
-            }).catch((error) => {
-                console.log(error)
-            })
+        setItems(data)
+        setCount(total)
+
     }
     const isSelected = (id: number | undefined) => {
         return itemsSelected?.some((selectedItem) => selectedItem.id === id);
@@ -58,24 +61,38 @@ export default function Home() {
     }
 
     return (
-        <Box sx={{
-            display: 'flex',
-            width: '100%',
-            flexDirection: 'column',
-        }}>
-            <FiltersHeader />
-            <Box sx={{
+        <Box
+            sx={{
                 display: 'flex',
-                flexDirection: 'row',
-                padding: '5px 0px 0px 0px',
-                justifyContent: 'space-between',
-                gap: '5px'
-            }} >
+                width: '100%',
+                flexDirection: 'column',
+                height: '100%',
+            }}>
+            <Box
+
+                component={Paper}
+                sx={{
+                    padding: '5px 10px 10px 10px',
+                }}
+            >
+                <FiltersHeader />
+            </Box>
+            <Box
+                component={Paper}
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    padding: '10px 10px 10px 10px',
+                    height: '100%',
+                    justifyContent: 'space-between',
+                    gap: '5px'
+                }} >
                 <ItemsTable
                     items={items}
                     handleSelectItem={onSelectItem}
                     itemsSelected={itemsSelected}
                     clearItemsSelected={clearItemsSelected}
+                    count={count}
                 />
                 <MenuOptions />
             </Box>
