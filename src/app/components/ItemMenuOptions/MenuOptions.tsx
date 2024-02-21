@@ -2,11 +2,13 @@
 import { Box, IconButton, SvgIcon } from "@mui/material";
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import CarpenterRoundedIcon from '@mui/icons-material/CarpenterRounded';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
 import { useSearchParams, useRouter } from "next/navigation"
 import Modal from "@/app/components/Modal/Modal";
 import TransactionAddForm from "@/app/components/Forms/Transaction/TransactionAddForm";
 import TransactionRemoveForm from "@/app/components/Forms/Transaction/TransactionRemoveForm";
 import useFilterUpdater from "@/utils/hooks/useFilterUpdate";
+import { Reports } from "../Forms/Reports/Reports";
 
 export enum Forms {
     add = 'add',
@@ -27,7 +29,7 @@ const Options: MenuProps[] = [{
     name: 'remove',
     form: Forms.remove,
 }, {
-    Icon: CarpenterRoundedIcon,
+    Icon: AnalyticsIcon,
     name: 'report',
     form: Forms.reports
 }]
@@ -38,7 +40,7 @@ export const MenuOptions = () => {
     const form = searchParams.get('form')
 
     return (
-        <Box display='flex' flexDirection='column'  >
+        <Box display='flex' flexDirection='column' gap='5px' >
             {Options.map((option, idx) => {
                 return (
                     <IconButton
@@ -48,8 +50,9 @@ export const MenuOptions = () => {
                         sx={{
                             width: '50px',
                             height: '50px',
-                            backgroundColor: '#f5f5f5',
+                            backgroundColor: '#3f8c17',
                             borderRadius: '50%',
+                            color: 'white'
                         }}
                     >
                         <option.Icon />
@@ -65,6 +68,15 @@ export const MenuOptions = () => {
                         onCancel={() => console.log('')}
                         onSucces={() => console.log('')}
                     />
+                )}
+                {form === Forms.remove && (
+                    <TransactionAddForm
+                        onCancel={() => console.log('')}
+                        onSucces={() => console.log('')}
+                    />
+                )}
+                {form === Forms.reports && (
+                    <Reports />
                 )}
             </Modal>
         </Box>
