@@ -11,7 +11,7 @@ const useFilterUpdater = () => {
             const currentOrder = newQueryParams['order']
             newQueryParams['order'] = currentOrder === 'asc' ? 'desc' : 'asc';
         }
-        if ((key === 'includeArchived' && value === 'false') || value === '') {
+        if ((key === 'includeArchived' && value === 'false' || key === 'menu' && value === 'false') || value === '') {
             delete newQueryParams[key];
         }
 

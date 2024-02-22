@@ -15,7 +15,7 @@ export const InventoryTable = ({ inventory }: InventoryTableProps) => {
                     height: 450
                 }}>
                     <Table >
-                        <TableHead sx={{ backgroundColor: '#f0f0f0', position: 'sticky', top: 0 }} >
+                        <TableHead  >
                             <TableRow>
                                 <TableCell>Nome</TableCell>
                                 <TableCell>Descrição</TableCell>
@@ -30,7 +30,7 @@ export const InventoryTable = ({ inventory }: InventoryTableProps) => {
                                 >
                                     <TableCell>{row.name}</TableCell>
                                     <TableCell>{row.description}</TableCell>
-                                    <TableCell>{row.totalVolumeM3 || '0.00'}</TableCell>
+                                    <TableCell>{row.volumeM3 || '0.00'}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

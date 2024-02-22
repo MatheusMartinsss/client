@@ -62,15 +62,17 @@ export default function Home() {
 
     return (
         <Box
+            component={Paper}
             sx={{
                 display: 'flex',
                 width: '100%',
                 flexDirection: 'column',
                 height: '100%',
+
             }}>
             <Box
 
-                component={Paper}
+
                 sx={{
                     padding: '5px 10px 10px 10px',
                 }}
@@ -78,7 +80,7 @@ export default function Home() {
                 <FiltersHeader />
             </Box>
             <Box
-                component={Paper}
+
                 sx={{
                     display: 'flex',
                     flexDirection: 'row',

@@ -16,7 +16,7 @@ export const ProductsTable = ({ products }: ProductsTableProps) => {
                     height: 450
                 }}>
                     <Table >
-                        <TableHead sx={{ backgroundColor: '#f0f0f0', position: 'sticky', top: 0 }} >
+                        <TableHead  >
                             <TableRow>
                                 <TableCell>Nome Cientifico</TableCell>
                                 <TableCell>Nome Popular</TableCell>

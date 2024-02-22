@@ -43,7 +43,7 @@ export const SideBarItem = ({ path, active, Icon, name }: sideBarItemProps) => {
                             justifyContent: 'center',
                             mr: 2,
                             ...(active && {
-                                color: 'primary.main'
+                                color: 'black'
                             })
                         }}
                     >
@@ -60,7 +60,7 @@ export const SideBarItem = ({ path, active, Icon, name }: sideBarItemProps) => {
                         color: common.white,
                         whiteSpace: 'nowrap',
                         ...(active && {
-                            color: 'primary.main'
+                            color: 'black'
                         }),
 
                     }}

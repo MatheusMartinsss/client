@@ -86,7 +86,7 @@ export const GroupedTreesTable = ({ data, order, orderBy, handleSubmit }: TreesT
                     display: 'flex'
                 }}>
                 <Table >
-                    <TableHead sx={{ backgroundColor: '#f0f0f0', position: 'sticky', top: 0 }} >
+                    <TableHead sx={{position: 'sticky', top: 0 }} >
                         <TableRow>
                             {colummns.map((colum) => {
                                 const isSortable = colum.sortable

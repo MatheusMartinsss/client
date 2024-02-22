@@ -11,7 +11,7 @@ const ContentBox = styled(Box)({
     display: 'flex',
     flexDirection: 'column',
     minHeight: '90vh',
-    maxWidth: 'calc(100vw - 240px)',
+    maxWidth: '100vw',
     padding: '20px 25px 10px 25px',
 
 })
@@ -20,7 +20,7 @@ const Template = ({ children }: TemplateProps) => {
         <Box sx={{ display: 'flex' }}>
             <Sidebar />
             <Box sx={{
-                width: 'calc(100% - 240px)',
+                width: '100%',
                 flexDirection: 'column'
             }} >
                 <Header />

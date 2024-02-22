@@ -32,7 +32,7 @@ export const TransactionsTable = ({ transactions, onDelete, onSelect }: Transact
                     height: 450
                 }}>
                     <Table >
-                        <TableHead sx={{ backgroundColor: '#f0f0f0', position: 'sticky', top: 0 }} >
+                        <TableHead sx={{ position: 'sticky', top: 0 }} >
                             <TableRow>
                                 <TableCell>Numero</TableCell>
                                 <TableCell>Tipo</TableCell>

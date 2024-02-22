@@ -69,7 +69,7 @@ export const ItemsSearchTable = ({ items, handleConfirm, handleModal }: ItemsTab
                 height: 450
             }}>
                 <Table >
-                    <TableHead sx={{ backgroundColor: '#f0f0f0', position: 'sticky', top: 0, zIndex: 999 }} >
+                    <TableHead sx={{ position: 'sticky', top: 0}} >
                         <TableRow>
                             <TableCell>#</TableCell>
                             <TableCell>Plaqueta</TableCell>

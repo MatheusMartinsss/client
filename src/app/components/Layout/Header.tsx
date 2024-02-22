@@ -4,8 +4,10 @@ import { Box, Typography, Button, IconButton } from "@mui/material"
 import { useSession, signOut } from 'next-auth/react'
 import { alpha } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
+import useFilterUpdater from '@/utils/hooks/useFilterUpdate';
 
 export const Header = () => {
+    const updateFilters = useFilterUpdater()
     const { data } = useSession()
     const user = data?.user
     return (
@@ -15,6 +17,7 @@ export const Header = () => {
                 backdropFilter: 'blur(6px)',
                 position: 'sticky',
                 backgroundColor: alpha(common.white, 0.5),
+                padding: '0px 25px 0px 25px',
                 display: 'flex',
                 height: 64,
                 zIndex: (theme) => theme.zIndex.appBar,
@@ -22,7 +25,9 @@ export const Header = () => {
             }}
         >
             <Box display='flex' alignItems='center'>
-                <IconButton>
+                <IconButton
+                    onClick={() => updateFilters('menu', 'open')}
+                >
                     <MenuIcon></MenuIcon>
                 </IconButton>
             </Box>

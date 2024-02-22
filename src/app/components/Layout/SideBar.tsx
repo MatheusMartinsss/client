@@ -5,7 +5,7 @@ import { Box, Stack, Toolbar } from "@mui/material";
 import { MenuItems } from './MenuItems';
 import { SideBarItem } from './SiderBarItem';
 import { usePathname, useSearchParams } from 'next/navigation'
-
+import useFilterUpdater from '@/utils/hooks/useFilterUpdate';
 const drawerWidth = 240
 
 const Drawer = styled(MuiDrawer)({
@@ -15,12 +15,13 @@ const Drawer = styled(MuiDrawer)({
     whiteSpace: 'nowrap',
     boxSizing: 'border-box',
     '& .MuiDrawer-paper': {
-        backgroundColor: '#1C2536',
+        backgroundColor: '#2c6433',
         width: drawerWidth,
     }
 });
 
 export const Sidebar = () => {
+    const updateFilter = useFilterUpdater()
     const searchParams = useSearchParams()
     const menu = searchParams.has('menu')
     const path = usePathname()
@@ -29,6 +30,7 @@ export const Sidebar = () => {
         <Drawer
             variant='temporary'
             open={menu}
+            onClose={() => updateFilter('menu', 'false')}
         >
             <Toolbar sx={{ boxShadow: "0 2px 4px rgba(128, 128, 128, 0.2)" }} >
                 <Box color='white'>
