@@ -4,12 +4,11 @@ import MuiDrawer from '@mui/material/Drawer';
 import { Box, Stack, Toolbar } from "@mui/material";
 import { MenuItems } from './MenuItems';
 import { SideBarItem } from './SiderBarItem';
-import { usePathname } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 
 const drawerWidth = 240
 
 const Drawer = styled(MuiDrawer)({
-
     width: drawerWidth,
     flexShrink: 0,
     display: 'flex',
@@ -22,14 +21,16 @@ const Drawer = styled(MuiDrawer)({
 });
 
 export const Sidebar = () => {
+    const searchParams = useSearchParams()
+    const menu = searchParams.has('menu')
     const path = usePathname()
 
     return (
         <Drawer
-            variant='permanent'
-            open={true}
+            variant='temporary'
+            open={menu}
         >
-            <Toolbar sx={{  boxShadow: "0 2px 4px rgba(128, 128, 128, 0.2)" }} >
+            <Toolbar sx={{ boxShadow: "0 2px 4px rgba(128, 128, 128, 0.2)" }} >
                 <Box color='white'>
                     Flona
                 </Box>
