@@ -5,6 +5,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import React from "react";
 import useFilterUpdater from "@/utils/hooks/useFilterUpdate";
 import { useSearchParams } from "next/navigation";
+import { Pagination } from "../TablePagination/TablePagination";
 interface ItemsTableProps {
     items: IItem[]
     handleSelectItem: (item: IItem) => void
@@ -51,8 +52,6 @@ export const ItemsTable = ({
     const searchParams = useSearchParams()
     const updateFilters = useFilterUpdater()
 
-    const page = Number(searchParams.get('page')) || 0
-    const rowsPerPage = Number(searchParams.get('rows')) || 10
     const orderBy = searchParams.get('orderBy') ?? ''
     const order: 'asc' | 'desc' = (searchParams.get('order') as 'asc' | 'desc') ?? 'asc';
 
@@ -75,18 +74,21 @@ export const ItemsTable = ({
                 sx={{
                     height: '600px',
                     display: 'flex',
+                    justifyContent: 'space-between',
                     flexDirection: 'column',
                     borderRadius: '16px',
                 }}
             >
-                <Table >
-                    <TableHead >
-                        <TableRow sx={{
-                            backgroundColor: '#2c6433',
+                <Table
+                    size="medium"
+                >
+                    <TableHead
+                        sx={{
                             position: 'sticky',
                             top: 0,
                             zIndex: 999
                         }}>
+                        <TableRow >
                             {colummns.map((colum) => {
                                 const isSortable = colum.sortable
                                 const isSelected = colum.id === orderBy
@@ -117,7 +119,12 @@ export const ItemsTable = ({
                             })}
                         </TableRow>
                     </TableHead>
-                    <TableBody>
+                    <TableBody
+                        sx={{
+                            height: '100%',
+                            flexGrow: 1
+                        }}
+                    >
                         {items.map((row) => {
                             const itemIsSelected = isSelected(row.id)
                             return (
@@ -125,6 +132,7 @@ export const ItemsTable = ({
                                     onClick={() => SelectItem(row)}
                                     key={row.id}
                                     selected={itemIsSelected}
+
                                 >
                                     <TableCell padding="checkbox">
                                         <Checkbox
@@ -147,26 +155,16 @@ export const ItemsTable = ({
                             )
                         })}
                     </TableBody>
-                    <TableFooter
-                        sx={{
-                            backgroundColor: '#2c6433',
-                            color: 'white',
-                            position: 'sticky', 
-                            bottom: 0, 
-                            zIndex: 999, 
-                        }}
-                    >
+                    <TableFooter sx={{
+                        position: 'sticky',
+                        bottom: 0,
+                        zIndex: 999
+                    }}>
                         <TableRow>
-                            <TablePagination
+                            <Pagination
                                 colSpan={13}
                                 count={count}
-                                page={page}
-                                rowsPerPage={rowsPerPage}
-                                onPageChange={(_, page) => updateFilters('page', page.toString())}
-                                onRowsPerPageChange={(e) => updateFilters('rows', e.target.value.toString())}
-                                sx={{
-                                    color: 'white'
-                                }}
+
                             />
                         </TableRow>
                     </TableFooter>
