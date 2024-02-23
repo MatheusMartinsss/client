@@ -10,9 +10,10 @@ type TemplateProps = {
 const ContentBox = styled(Box)({
     display: 'flex',
     flexDirection: 'column',
-    minHeight: '90vh',
+    minHeight: 'calc(100vh - 64px)',
     maxWidth: '100vw',
     padding: '20px 25px 10px 25px',
+    boxSizing: 'border-box'
 
 })
 const Template = ({ children }: TemplateProps) => {
@@ -24,7 +25,7 @@ const Template = ({ children }: TemplateProps) => {
                 flexDirection: 'column'
             }} >
                 <Header />
-                <ContentBox bgcolor='#fafafa'>
+                <ContentBox bgcolor='#dedede'>
                     {children}
                 </ContentBox>
             </Box>

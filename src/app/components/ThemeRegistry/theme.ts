@@ -105,12 +105,12 @@ const theme = createTheme({
         MuiPaper: {
             styleOverrides: {
                 root: ({ theme }) => ({
-                    borderTop: '5px solid', 
+                    borderTop: '5px solid',
                     borderTopColor: theme.palette.primary.main,
-                    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
-                   
+                    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.4)',
+                    backgroundColor: 'white'
                 })
-            }
+            },
         },
     },
 });
