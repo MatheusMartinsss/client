@@ -1,6 +1,6 @@
 "use client"
 import { ListItems } from "@/services/itemService";
-import { IItem, ItemQuerys } from "@/types/items/item";
+import { IItem } from "@/types/items/item";
 import { Box, Paper } from "@mui/material";
 import { useEffect, useState } from "react";
 import ItemsTable from "@/app/components/ItemsTable/ItemsTable";
@@ -25,7 +25,6 @@ export default function Home() {
     useEffect(() => {
         getItems()
     }, [from, to, searchBy, includeArchived, inventoryId, order, orderBy, page, limit])
-
     const getItems = async () => {
         const { data, total } = await ListItems({
             inventoryId: inventoryId,
@@ -41,12 +40,10 @@ export default function Home() {
         })
         setItems(data)
         setCount(total)
-
     }
     const isSelected = (id: number | undefined) => {
         return itemsSelected?.some((selectedItem) => selectedItem.id === id);
     };
-
     const onSelectItem = (item: IItem) => {
         const itemIsSelected = isSelected(item.id)
         if (itemIsSelected) {
@@ -59,36 +56,24 @@ export default function Home() {
     const clearItemsSelected = () => {
         setItemsSelected([])
     }
-
     return (
         <Box
             component={Paper}
             sx={{
                 display: 'flex',
                 width: '100%',
-                flexDirection: 'column',
+                flexDirection: 'row',
                 height: '100%',
-
             }}>
-            <Box
-
-
-                sx={{
-                    padding: '5px 10px 10px 10px',
-                }}
+            <Box sx={{
+                width: '100%',
+                padding: '5px 10px 10px 10px',
+                gap: '5px',
+                display: 'flex',
+                flexDirection: 'column'
+            }}
             >
                 <FiltersHeader />
-            </Box>
-            <Box
-
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    padding: '10px 10px 10px 10px',
-                    height: '100%',
-                    justifyContent: 'space-between',
-                    gap: '5px'
-                }} >
                 <ItemsTable
                     items={items}
                     handleSelectItem={onSelectItem}
@@ -96,6 +81,14 @@ export default function Home() {
                     clearItemsSelected={clearItemsSelected}
                     count={count}
                 />
+            </Box>
+            <Box
+                sx={{
+                    display: 'flex',
+                    padding: '10px 10px 10px 10px',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }} >
                 <MenuOptions />
             </Box>
         </Box >
