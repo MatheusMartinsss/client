@@ -29,8 +29,8 @@ export default function Home() {
         const { data, total } = await ListItems({
             inventoryId: inventoryId,
             includeArchived: includeArchived,
-            from: from,
-            to: to,
+            createdAtFrom: from,
+            createdAtTo: to,
             searchBy: searchBy,
             order: order,
             orderBy: orderBy,
