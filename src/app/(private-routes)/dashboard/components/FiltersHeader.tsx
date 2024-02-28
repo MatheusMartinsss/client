@@ -17,7 +17,7 @@ const FiltersHeader = () => {
     const inventorysIds = (searchParams.get('inventorysIds')?.split(',')) || []
 
     const [inventorysList, setInventorysList] = useState<inventory[]>([])
-    console.log(inventorysIds)
+ 
     useEffect(() => {
         getInventorys()
     }, [])
