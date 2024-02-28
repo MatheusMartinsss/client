@@ -39,8 +39,8 @@ export const findOneItemByCode = async (code: string) => {
 
 export const getItemsReport = async ({ includeArchived, from, to, inventorysIds, productsIds }: {
     includeArchived?: boolean,
-    from?: Date | null,
-    to?: Date | null,
+    from?: string,
+    to?: string,
     inventorysIds?: string,
     productsIds?: string
 }): Promise<void> => {
@@ -49,8 +49,8 @@ export const getItemsReport = async ({ includeArchived, from, to, inventorysIds,
             responseType: 'blob',
             params: {
                 includeArchived: includeArchived,
-                from,
-                to,
+                createdAtFrom: from,
+                createdAtTo: to,
                 inventorysIds,
                 productsIds
             }

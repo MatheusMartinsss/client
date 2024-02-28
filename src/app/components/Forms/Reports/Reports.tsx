@@ -1,6 +1,5 @@
 import { getItemsReport } from "@/services/itemService"
-import { Box, Button, FormControlLabel, Grid, MenuItem, OutlinedInput, Select, SelectChangeEvent, Typography } from "@mui/material"
-import FilterDateInput from "../../FilterDateInput/FilterDateInput"
+import { Box, Button, FormControlLabel, Grid, MenuItem, Select, SelectChangeEvent, TextField, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import Switch from '@mui/material/Switch';
 import { inventory } from "@/types/inventory/inventory";
@@ -10,8 +9,8 @@ import { IProduct } from "@/types/product/product";
 
 export const Reports = () => {
     const [inventoryList, setInventoryList] = useState<inventory[]>([])
-    const [from, setFrom] = useState<Date | null>(null)
-    const [to, setTo] = useState<Date | null>(null)
+    const [from, setFrom] = useState<string>('')
+    const [to, setTo] = useState<string>('')
     const [includeAchived, setIncludeArchived] = useState<boolean>(false)
     const [inventorysIds, setInventorysIds] = useState<string[]>([''])
     const [productsList, setProductsList] = useState<IProduct[]>([])
@@ -124,24 +123,20 @@ export const Reports = () => {
                     <Typography variant="caption" fontWeight='bolder'>Data de entrada</Typography>
                     <Grid item container spacing={2}>
                         <Grid item xs={6}>
-                            <FilterDateInput
-                                value={from}
-                                onChange={(value) => setFrom(value)}
-                                props={{
-                                    fullWidth: true
-                                }}
+                            <TextField
+                                type="date"
+                                onChange={(e) => setFrom(e.target.value)}
+                                fullWidth
                             >
-                            </FilterDateInput>
+                            </TextField>
                         </Grid>
                         <Grid item xs={6}>
-                            <FilterDateInput
-                                value={to}
-                                onChange={(value) => setTo(value)}
-                                props={{
-                                    fullWidth: true
-                                }}
+                            <TextField
+                                type="date"
+                                onChange={(e) => setTo(e.target.value)}
+                                fullWidth
                             >
-                            </FilterDateInput>
+                            </TextField>
                         </Grid>
                     </Grid>
                 </Grid>
