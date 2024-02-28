@@ -47,7 +47,7 @@ export interface ItemQuerys {
     createdAtFrom?: string;
     includeArchived?: boolean;
     searchBy?: string;
-    inventoryId?: string;
+    inventorysIds?: string;
     page?: number
     limit?: number;
 }

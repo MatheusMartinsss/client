@@ -17,17 +17,17 @@ export default function Home() {
     const to = searchParams.get('to') || ''
     const searchBy = searchParams.get('searchBy') || ''
     const includeArchived = searchParams.has('includeArchived')
-    const inventoryId = searchParams.get('inventoryId') || ''
+    const inventorysIds = searchParams.get('inventorysIds') || ''
     const order: 'asc' | 'desc' = (searchParams.get('order') as 'asc' | 'desc') || 'asc';
     const orderBy = searchParams.get('orderBy') || ''
     const page = Number(searchParams.get('page')) || 0
     const limit = Number(searchParams.get('rows')) || 10
     useEffect(() => {
         getItems()
-    }, [from, to, searchBy, includeArchived, inventoryId, order, orderBy, page, limit])
+    }, [from, to, searchBy, includeArchived, inventorysIds, order, orderBy, page, limit])
     const getItems = async () => {
         const { data, total } = await ListItems({
-            inventoryId: inventoryId,
+            inventorysIds,
             includeArchived: includeArchived,
             createdAtFrom: from,
             createdAtTo: to,

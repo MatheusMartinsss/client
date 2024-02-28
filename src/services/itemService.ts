@@ -3,11 +3,11 @@ import api from "@/utils/api"
 import saveAs from "file-saver";
 
 
-export const ListItems = async ({ inventoryId, includeArchived = false, searchBy, createdAtFrom, createdAtTo, order, orderBy, page, limit }: ItemQuerys) => {
+export const ListItems = async ({ inventorysIds, includeArchived = false, searchBy, createdAtFrom, createdAtTo, order, orderBy, page, limit }: ItemQuerys) => {
     try {
         const response = await api.get(`/item`, {
             params: {
-                inventoryId,
+                inventorysIds,
                 includeArchived,
                 searchBy,
                 createdAtFrom,

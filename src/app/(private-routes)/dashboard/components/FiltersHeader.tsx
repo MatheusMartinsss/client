@@ -1,4 +1,4 @@
-import { Grid, InputAdornment, MenuItem, Select, TextField, Typography } from "@mui/material"
+import { FormControlLabel, Grid, InputAdornment, MenuItem, Select, SelectChangeEvent, Switch, TextField, Typography } from "@mui/material"
 import SearchIcon from '@mui/icons-material/Search';
 import FilterButton from "@/app/components/FilterButton/FilterButton";
 import { useEffect, useState } from "react";
@@ -14,10 +14,10 @@ const FiltersHeader = () => {
     const to = searchParams.get('to') ?? ''
     const searchBy = searchParams.get('searchBy') ?? ''
     const includeArchived = searchParams.has('includeArchived')
-    const inventoryId = searchParams.get('inventoryId') ?? ''
+    const inventorysIds = (searchParams.get('inventorysIds')?.split(',')) || []
 
     const [inventorysList, setInventorysList] = useState<inventory[]>([])
-
+    console.log(inventorysIds)
     useEffect(() => {
         getInventorys()
     }, [])
@@ -31,9 +31,22 @@ const FiltersHeader = () => {
             console.log(error)
         })
     }
+    const selectInventory = (event: SelectChangeEvent<typeof inventorysIds>) => {
+        const { target: { value } } = event;
+        const lastIndex = value[value.length - 1].toString()
+        let newValue;
+        const selectedValue = value.toString();
+        if (value.includes(lastIndex)) {
+            const newFormatedValue = value as string[]
+            newValue = newFormatedValue.filter((values) => values.toString() !== lastIndex).join(',')
+        } else {
+            newValue = (typeof selectedValue === 'string' ? selectedValue.split(',') : selectedValue).join(',')
+        }
+        updateFilters('inventorysIds', newValue);
+    };
     return (
         <Grid container spacing={2} >
-            <Grid item xs={4}>
+            <Grid item xs={6}>
                 <Typography variant='caption' fontWeight='600'>Pesquisar</Typography>
                 <TextField
                     onChange={(e) => updateFilters('searchBy', e.target.value)}
@@ -51,20 +64,22 @@ const FiltersHeader = () => {
                     }}
                 ></TextField>
             </Grid>
-            <Grid item xs={12}>
-            </Grid>
-            <Grid item xs={6} container>
-                <Grid item xs={2} display='flex' alignItems='flex-end' >
-                    <FilterButton
-                        onClick={() => updateFilters('includeArchived', includeArchived ? 'false' : 'true')}
-                        isActive={includeArchived}
-                    >
-                        Removidas
-                    </FilterButton>
+   
+            <Grid item xs={12} md={6} container spacing={2}>
+                <Grid item xs={12} md = {3} alignItems='flex-end' justifyContent='flex-end' display='flex' >
+                    <FormControlLabel
+                        value='top'
+                        label='Removidas'
+                        control={
+                            <Switch
+                                onChange={() => updateFilters('includeArchived', includeArchived ? 'false' : 'true')}
+                                checked={includeArchived}
+                            ></Switch>
+                        }
+                    />
+
                 </Grid>
-            </Grid>
-            <Grid item xs={6} container spacing={2}>
-                <Grid item xs={3} container>
+                <Grid item xs={6} md={3} container>
                     <Grid item xs={12}>
                         <Typography variant='caption' fontWeight='600'>Data Inicial</Typography>
                     </Grid>
@@ -79,7 +94,7 @@ const FiltersHeader = () => {
                         </TextField>
                     </Grid>
                 </Grid>
-                <Grid item xs={3} container>
+                <Grid item xs={6} md={3} container>
                     <Grid item xs={12}>
                         <Typography variant='caption' fontWeight='600'>Data Final</Typography>
                     </Grid>
@@ -95,22 +110,18 @@ const FiltersHeader = () => {
                         </TextField>
                     </Grid>
                 </Grid>
-                <Grid item xs={6}>
-                    <Typography variant='caption' fontWeight='600'>Patio</Typography>
+                <Grid item xs={12} md={3}>
+                    <Typography variant="caption" fontWeight='bolder'>Patios</Typography>
                     <Select
-                        value={inventoryId}
                         fullWidth
-                        id="inventory-select"
-                        onChange={(e) => updateFilters('inventoryId', e.target.value ?? '')}
+                        value={inventorysIds}
+                        multiple
                         size="small"
+                        displayEmpty
+                        onChange={selectInventory}
                     >
-                        <MenuItem value={''}></MenuItem>
-                        {inventorysList?.length > 0 && inventorysList?.map((item: inventory) => (
-                            <MenuItem
-                                key={item.id}
-                                value={item.id}>
-                                {item.name} - {item.volumeM3}M3
-                            </MenuItem>
+                        {inventorysList.map((inventory) => (
+                            <MenuItem value={inventory.id}>{inventory.name}</MenuItem>
                         ))}
                     </Select>
                 </Grid>
