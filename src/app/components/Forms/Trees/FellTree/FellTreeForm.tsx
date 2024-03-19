@@ -13,8 +13,6 @@ import React from "react";
 import { ICutFell, ITree } from "@/types/tree/tree";
 import { ICreateItem } from "@/types/items/item";
 
-
-
 interface FellTreeFormProps {
     handleSubmit: (item: any) => void
     data: ICutFell

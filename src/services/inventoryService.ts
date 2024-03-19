@@ -1,12 +1,11 @@
 import { ICreateInventory, inventory } from "@/types/inventory/inventory";
 import api from "@/utils/api"
 
-export const ListInventorys = async ({ includeVolume = false, includeRemoved = false }:
+export const ListInventorys = async ({  includeRemoved = false }:
     { includeVolume?: boolean, includeRemoved?: boolean }) => {
     try {
         const response = await api.get(`/inventory`, {
             params: {
-                includeVolume,
                 includeRemoved
             }
         });
